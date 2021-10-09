@@ -4,14 +4,15 @@
         <link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.min.css">
         <style>
         #mapid {
-            height: 100%;
-            width: 100%;
+            height: 94vh;
+            max-width: 100%;
         }
         </style>
     	<script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.js"></script>
         <script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.min.js"></script>
         <script src="./resources/leaflet/leaflet.js"></script>
         <script src="./resources/jquery-3.6.0.min.js"></script>
+        <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
 
         <link rel="stylesheet" href="./resources/leaflet/leaflet.css">
@@ -51,6 +52,9 @@
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="#">Unit's View</a>
         				</li>
+                <li class="nav-item">
+        					<a href="login.php" class="nav-link">Sign Out - Not yet Done</a>
+        				</li>
       				</ul>
     			</div>
   			</div>
@@ -60,28 +64,72 @@
 </html>
 
 <script>
-
-var map = L.map('mapid').setView([10.3157, 123.8854], 14);
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+$( document ).ready(function() {
+  var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+  var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
     osm.addTo(map);
         
-  var geocodeService = L.esri.Geocoding.geocodeService();
-  var longitude;
-  var latitude;
+    setInterval(() =>{
+        navigator.geolocation.getCurrentPosition(getPosition);
+    }, 5000);
 
-  map.on('click', function (e) {
-    geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-      if (error) {
-        return;
-      }
-      var test = result.latlng;
-      latitude = test.lat;
-      longitude = test.lng;
-      console.log(test,latitude,longitude);
+    Pusher.logToConsole = true;
 
-      L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+    var pusher = new Pusher('cb4b3192ce43653d8642', {
+      cluster: 'ap1'
     });
-  });
+
+
+    var marker,circle;
+
+    function getPosition(position){
+    // console.log(position)
+
+    var lat = position.coords.latitude;
+    var long = position.coords.longitude;
+    var accuracy = position.coords.accuracy;
+
+    if(marker) {
+        map.removeLayer(marker)
+    }
+
+    if(circle){
+        map.removeLayer(circle)
+    }
+
+    marker = L.marker([lat, long])
+    circle = L.circle([lat, long], {radius: accuracy})
+
+    var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+
+    map.fitBounds(featureGroup.getBounds())
+
+    // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
+
+    $.ajax({ //Process the form using $.ajax()
+                type      : 'POST', //Method type
+                url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
+                data      : {
+                  lat: lat,
+                  long: long,
+                  accuracy: accuracy
+                }, //Forms name
+                dataType  : 'json',
+                success   : function(data) {
+                                console.log(data);
+                            }
+            });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      // $('#appendhere').append('<p>'+data.message+'Your coordinate is: Lat:'+ data.lat +'Long:'+ data.long +' Accuracy:'+ data.accuracy+'</p>');
+      var marker2 = new L.marker([data.long , data.lat]);
+      marker2.addTo(map);
+    });
+
+  }
+
+});
 </script>

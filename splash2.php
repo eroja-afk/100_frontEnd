@@ -11,10 +11,10 @@
         <link rel="stylesheet" href="./resources/leaflet/leaflet.css">
         <link rel="stylesheet" href="splash.css">
         <link rel="stylesheet" href="navbar.css">
-        <link rel="stylesheet" type="text/css" href="datatables.css">
-        <link rel="stylesheet" type="text/css" href="datatables.min.css">
-        <script type="text/javascript" charset="utf8" src="datatables.js"></script>
-        <script type="text/javascript" charset="utf8" src="datatables.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="DataTables\datatables.css">
+        <link rel="stylesheet" type="text/css" href="DataTables\datatables.min.css">
+        <script type="text/javascript" charset="utf8" src="DataTables\datatables.js"></script>
+        <script type="text/javascript" charset="utf8" src="DataTables\datatables.min.js"></script>
         
          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -124,34 +124,34 @@
     </html>
 
 <script>
+$( document ).ready(function() { 
 
-var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+    $('#table_id').DataTable();  
+
+    var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
     osm.addTo(map);
         
-  var geocodeService = L.esri.Geocoding.geocodeService();
-  var longitude;
-  var latitude;
+    var geocodeService = L.esri.Geocoding.geocodeService();
+    var longitude;
+    var latitude;
 
-  map.on('click', function (e) {
-    geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-      if (error) {
-        return;
-      }
-      var test = result.latlng;
-      latitude = test.lat;
-      longitude = test.lng;
-      console.log(test,latitude,longitude);
+    map.on('click', function (e) {
+        geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+        if (error) {
+            return;
+        }
+        var test = result.latlng;
+        latitude = test.lat;
+        longitude = test.lng;
+        console.log(test,latitude,longitude);
 
-      alert(result.latlng)
-      L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+        alert(result.latlng)
+        L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+        });
     });
-  });
-
- 
-  
 
     $("#fhuman").hide();
     $("#fprop").hide();
@@ -169,11 +169,7 @@ var map = L.map('mapid').setView([10.3157, 123.8854], 14);
         }
     }
 
-
-
-    $( document ).ready(function() {  
-        $('#table_id').DataTable();  
-    });
+});
 
         
 </script>

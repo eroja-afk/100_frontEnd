@@ -38,7 +38,10 @@
                 <input type="submit" id="markerbtn" value="Place Marker">
             </form>
         </div>
+        <button id="clickme">Click ME!</button>
+        <div id='appendhere'></div>
     </body>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         $( document ).ready(function() {
             var marker;
@@ -115,7 +118,32 @@
 
         })
 
-        
+        $('#clickme').click(function(){
+            var lat= $('#clickme').val();
+
+            $.ajax({ //Process the form using $.ajax()
+                type      : 'POST', //Method type
+                url       : 'http://localhost:3000/pusher', //Your form processing file URL
+                data      : lat, //Forms name
+                dataType  : 'json',
+                success   : function(data) {
+                                console.log(data);
+                            }
+            });
+
+        })
+
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('cb4b3192ce43653d8642', {
+        cluster: 'ap1'
+        });
+
+
+            var channel = pusher.subscribe('my-channel');
+            channel.bind('my-event', function(data) {
+                $('#appendhere').append('<p>'+data.message+'Your coordinate is: Lat:'+ data.lat +'Long:'+ data.long +' Accuracy:'+ data.accuracy+'</p>');
+            });
 
     });
 

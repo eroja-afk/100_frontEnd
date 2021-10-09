@@ -20,6 +20,7 @@
       <input type="password" id="password" class="fadeIn third" name="password" placeholder="Enter Password">
       <input type="submit" class="fadeIn fourth" value="Log In">
     </form>
+    <a href="units.php" class="nav-link">Login - Testing</a>
 
     <!-- Forget Password -->
     <!-- <div id="formFooter">
@@ -32,7 +33,7 @@
 </html>
 <script>
 $( document ).ready(function() {
-  
+
   $('#loginForm').on('submit', function(e){
     e.preventDefault();
     const data = new FormData(e.target);

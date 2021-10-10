@@ -107,6 +107,7 @@
             <table id="table_id" class="display">
             <thead>
                 <tr>
+                    <th>Crime On</th>
                     <th>Crime Type</th>
                     <th>Date Reported</th>
                     <th>Reporter Name</th>
@@ -147,12 +148,16 @@ $( document ).ready(function() {
             if (error) {
                 return;
             }
+            $("#lo").val(result.latlng.lng);
+            $("#la").val(result.latlng.lat);
 
             alert(result.latlng)
             marker = L.marker(result.latlng,{draggable:"true"}).addTo(map).bindPopup(result.address.Match_addr).openPopup();
             });
         }
     });
+
+    
 
     $("#rmvmarker").click(function(){
         deleteMarker();
@@ -185,12 +190,11 @@ $( document ).ready(function() {
     }
 
     function makeMarker(data){
-        L.marker([data.latitude,data.longitude],{draggable:"true"}).addTo(map).bindPopup(data);
+        L.marker([data.latitude,data.longitude]).addTo(map).bindPopup(data);
     }
 
     function addTableRow(data){
-         table.row.add([data.crimeType_id,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
-        
+         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
     }
 
     
@@ -207,7 +211,7 @@ $( document ).ready(function() {
                 //console.log(tableData)
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
                     //console.log(tableData.data[i])
-                    something = tableData.data[i]
+                    something = tableData.data[i];
                     dataAll.push(tableData.data[i]);
                     makeMarker(tableData.data[i]);
                     addTableRow(something);

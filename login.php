@@ -1,4 +1,50 @@
-<?php header('Access-Control-Allow-Origin: *'); ?>
+<?php 
+  header('Access-Control-Allow-Origin: *'); 
+
+  session_start();
+
+  if(isset($_POST['submit'])){
+    $ch = curl_init();
+
+    $data = array(
+      'username' => $_POST['username'],
+      'password' => $_POST['password']
+    );
+
+    curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
+    curl_setopt($ch, CURLOPT_FAILONERROR, true);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+    // In real life you should use something like:
+    // curl_setopt($ch, CURLOPT_POSTFIELDS, 
+    //          http_build_query(array('postvar1' => 'value1')));
+
+    // Receive server response ...
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $server_output = curl_exec($ch);
+
+    // Further processing ...
+    // var_dump($server_output);
+
+
+    if(curl_exec($ch) === false){
+      $error_msg = curl_error($ch);
+    } else {
+      $data = json_decode($server_output, true);
+      $_SESSION['userId'] = $data['data'][0]['Id'];
+      $type = $data['data'][0]['type'];
+      if(strcasecmp($type, 'dispatcher') == 0){
+        header('Location: splash2.php');
+      } else if(strcasecmp($type, 'units') == 0){
+        header('Location: units.php');
+      }
+    }
+
+    curl_close ($ch);
+  }
+?>
 
 <!DOCTYPE html>
 <html>
@@ -9,18 +55,20 @@
    	<script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.js"></script>
     <script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.min.js"></script>
     <script src="./resources/jquery-3.6.0.min.js"></script>
+    <title>RECAS - Login</title>
 </head>
 <body>
 	<div class="wrapper fadeInDown">
  		 <div id="formContent">
         <h1>RECAS-Login</h1>
 
-    <form id="loginForm">
+    <form action="" method="post">
+      <!-- <form id="loginForm"> -->
       <input type="text" id="user" class="fadeIn second" name="username" placeholder="Enter User">
       <input type="password" id="password" class="fadeIn third" name="password" placeholder="Enter Password">
-      <input type="submit" class="fadeIn fourth" value="Log In">
+      <input type="submit" class="fadeIn fourth" name="submit" value="Login">
     </form>
-    <a href="units.php" class="nav-link">Login - Testing</a>
+    <a href="units.php" class="nav-link">Login units - Testing</a>
 
     <!-- Forget Password -->
     <!-- <div id="formFooter">
@@ -50,10 +98,9 @@ $( document ).ready(function() {
         'Access-Control-Allow-Origin': '*'
       },
       dataType: 'json',
-        success: function(res){
+      success: function(res){
         console.log(res);
-        alert("Login");
-        $(location).attr('href','units.php');
+        // $(location).attr('href','units.php');
       }
     });
   });

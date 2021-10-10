@@ -51,72 +51,96 @@
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="#">Home</a>
         				</li>
-        				<li class="nav-item">
-        					<a class="nav-link disabled">Sign Out</a>
-        				</li>
       				</ul>
+                    <a href="logout.php" class="btn btn-danger">Sign Out</a>
     			</div>
   			</div>
-		</nav>
+		</nav><br>
         <div class = "container">
-		<div>
-            <form class="content">
-           		<h4><b><i>Longitude and Latitude:</i></b></h4>
-                <input id="lo" class="lo" type="text" name="longitude"placeholder="Longitude" disabled="">
-                <input id="la" class="la" type="text" name="latitude" placeholder="Latitude" disabled="">
-                <h4><b><i>Reporters Name:</i></b></h4>
-                <input id="name" type="text" name="name" placeholder="Enter Name">
-                <h4><b><i>Reporters Contact:</i></b></h4>
-                <input id="contact" type="text" name="contact" placeholder="Enter Contact Details">
-                <h4><b><i>Reporters Address:</i></b></h4>
-                <input id="address" type="text" name="address" placeholder="Enter Address">
-                <h4><b><i>Reporters Details:</i></b></h4>
-                <textarea id="details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
-                <h4><b><i>Crimes Against</i></b></h4>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card bg-light">
+                        <div class="card-header bg-primary text-white">Report a Crime</div>
+                    <div class="card-body">
+                        <form class="content">
+                            <div class="mb-3 row">
+                                <label class="form-label">Longitude and Latitude</label>
+                                <div class="col-sm-6">
+                                    <input id="lo" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input id="la" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Reporters Name</label>
+                                <input class="form-control" id="name" type="text" name="name" placeholder="Enter Name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="contact" class="form-label">Reporters Contact</label>
+                                <input class="form-control" id="contact" type="text" name="contact" placeholder="Enter Contact Details">
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Reporters Address</label>
+                                <input class="form-control" id="address" type="text" name="address" placeholder="Enter Address">
+                            </div>
+                            <div class="mb-3">
+                                <label for="details" class="form-label">Reporters Details</label>
+                                <textarea class="form-control" id="details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="details" class="form-label">Crimes Against</label>
+                                <select class="form-control" id="choice" onclick="showChoice(this.value)">
+                                <option value="0">Select Option</option>
+                                <option value="Human">Against Human</option>
+                                <option value="Property">Against Property</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-control" id="fhuman" name="For Human">
+                                    <option value="0">Select Option</option>
+                                    <option value="murder">Murder</option>
+                                    <option value="homi">Homicide</option>
+                                    <option value="pi">Physical Injuries</option>
+                                    <option value="rape">Rape</option>
+                                </select>
+                            </div>
 
-                <select id="choice" onclick="showChoice(this.value)">
-                    <option value=""></option>
-                    <option value="Human">Against Human</option>
-                    <option value="Property">Against Property</option>
-                </select>
-
-                <select id="fhuman" name="For Human">
-                    <option value=""></option>
-                    <option value="murder">Murder</option>
-                    <option value="homi">Homicide</option>
-                    <option value="pi">Physical Injuries</option>
-                    <option value="rape">Rape</option>
-                </select>
-
-                <select id="fprop" name="For Property">
-                    <option value=""></option>
-                    <option value="robbery">Robbery</option>
-                    <option value="theft">Theft</option>
-                    <option value="carnap">Carnapping</option>
-                </select>
-            </form>
-        </div>
-
-        <div id="mapid"></div>
-        
-            <table id="table_id" class="display">
-            <thead>
-                <tr>
-                    <th>Column 1</th>
-                    <th>Column 2</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Row 1 Data 1</td>
-                    <td>Row 1 Data 2</td>
-                </tr>
-                <tr>
-                    <td>Row 2 Data 1</td>
-                    <td>Row 2 Data 2</td>
-                </tr>
-                </tbody>
-            </table>
+                            <div class="mb-3">
+                                <select class="form-control" id="fprop" name="For Property">
+                                    <option value="0">Select Option</option>
+                                    <option value="robbery">Robbery</option>
+                                    <option value="theft">Theft</option>
+                                    <option value="carnap">Carnapping</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-success form-control" id="submitCrime">Report Crime</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                <div class="col-sm-8">
+                    <div id="mapid"></div>
+                </div>
+            </div>
+                <table id="table_id" class="display">
+                <thead>
+                    <tr>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Row 1 Data 1</td>
+                        <td>Row 1 Data 2</td>
+                    </tr>
+                    <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                    </tr>
+                    </tbody>
+                </table>
         
         </div>
     </body>
@@ -124,6 +148,20 @@
     </html>
 
 <script>
+    
+function showChoice(choice){
+    if(choice == "Human"){
+        $("#fhuman").show();
+        $("#fprop").hide();
+    }else if(choice == "Property"){
+        $("#fprop").show();
+        $("#fhuman").hide();
+    }else{
+        $("#fhuman").hide();
+        $("#fprop").hide();
+    }
+}
+
 $( document ).ready(function() { 
 
     $('#table_id').DataTable();  
@@ -155,19 +193,6 @@ $( document ).ready(function() {
 
     $("#fhuman").hide();
     $("#fprop").hide();
-        
-    function showChoice(choice){
-        if(choice == "Human"){
-            $("#fhuman").show();
-            $("#fprop").hide();
-        }else if(choice == "Property"){
-            $("#fprop").show();
-            $("#fhuman").hide();
-        }else{
-            $("#fhuman").hide();
-            $("#fprop").hide();
-        }
-    }
 
 });
 

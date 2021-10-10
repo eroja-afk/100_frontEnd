@@ -3,9 +3,29 @@
     	<link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.min.css">
         <style>
+        body {
+          width: 100vw;
+        }
         #mapid {
-            height: 94vh;
-            max-width: 100%;
+          margin: 10px 10px 10px 10px;
+          height: 90vh;
+          max-width: 100%;
+        }
+
+        #crimeInfo {
+          margin-top: 20px;
+          padding: 0px;
+          height: 500px;
+          overflow-y :scroll;
+          max-width:90%;
+        }
+        #crimeInfo .card-header {
+          position: sticky;
+          top: 0px;
+          color: white;
+        }
+        #crimeInfo li {
+          list-style-type: none;
         }
         </style>
     	<script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.js"></script>
@@ -52,14 +72,24 @@
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="#">Unit's View</a>
         				</li>
-                <li class="nav-item">
-        					<a href="login.php" class="nav-link">Sign Out - Not yet Done</a>
-        				</li>
       				</ul>
+              <a href="logout.php" class="btn btn-danger float-end">Sign Out</a>
     			</div>
   			</div>
 		</nav>
-        <div id="mapid"></div>
+        <div class="row">
+          <div class="col-sm-8">
+            <div id="mapid"></div>
+          </div>
+          <div class="col-sm-4" id="crimeInfo">
+            <div class="card">
+              <div class="card-header bg-primary">Report Crime Information</div>
+              <div class="card-body" id="info-body">
+
+              </div>
+            </div>
+          </div>
+      </div>
     </body>
 </html>
 
@@ -71,9 +101,9 @@ $( document ).ready(function() {
         });
     osm.addTo(map);
         
-    setInterval(() =>{
-        navigator.geolocation.getCurrentPosition(getPosition);
-    }, 5000);
+    // setInterval(() =>{
+    //     navigator.geolocation.getCurrentPosition(getPosition);
+    // }, 5000);
 
     Pusher.logToConsole = true;
 
@@ -84,6 +114,13 @@ $( document ).ready(function() {
 
     var marker,circle;
 
+    function makeMarker(data){
+      if(!marker && !circle) {
+        map.removeLayer(L.marker([data.lat,data.long]))
+        L.marker([data.lat,data.long]).addTo(map);
+      }
+    }
+
     function getPosition(position){
     // console.log(position)
 
@@ -91,45 +128,71 @@ $( document ).ready(function() {
     var long = position.coords.longitude;
     var accuracy = position.coords.accuracy;
 
-    if(marker) {
-        map.removeLayer(marker)
-    }
+    if(!marker && !circle) {
+      marker = L.marker([lat, long])
+      circle = L.circle([lat, long], {radius: accuracy})
 
-    if(circle){
-        map.removeLayer(circle)
-    }
+      var featureGroup = L.featureGroup([marker, circle]).addTo(map)
 
-    marker = L.marker([lat, long])
-    circle = L.circle([lat, long], {radius: accuracy})
+      // map.fitBounds(featureGroup.getBounds())
 
-    var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+      // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
 
-    map.fitBounds(featureGroup.getBounds())
-
-    // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
-
-    $.ajax({ //Process the form using $.ajax()
-                type      : 'POST', //Method type
-                url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
-                data      : {
-                  lat: lat,
-                  long: long,
-                  accuracy: accuracy
-                }, //Forms name
-                dataType  : 'json',
-                success   : function(data) {
-                                console.log(data);
-                            }
-            });
+      $.ajax({ //Process the form using $.ajax()
+                  type      : 'POST', //Method type
+                  url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
+                  data      : {
+                    lat: lat,
+                    long: long,
+                    accuracy: accuracy
+                  }, //Forms name
+                  dataType  : 'json',
+                  success   : function(data) {
+                                  console.log(data);
+                              }
+              });
 
     var channel = pusher.subscribe('my-channel');
     channel.bind('my-event', function(data) {
-      // $('#appendhere').append('<p>'+data.message+'Your coordinate is: Lat:'+ data.lat +'Long:'+ data.long +' Accuracy:'+ data.accuracy+'</p>');
-      var marker2 = new L.marker([data.long , data.lat]);
-      marker2.addTo(map);
+      makeMarker(data);
     });
+        
+    } else {
+      map.removeLayer(marker)
+      map.removeLayer(circle)
+    }
 
   }
+
+  const getCrimes = () => {
+    $.ajax({ //Process the form using $.ajax()
+      type      : 'get', //Method type
+      url       : 'https://recas-api.vercel.app/getAllCrimes', //Your form processing file URL
+      dataType  : 'json',
+      success   : function(resp) {
+        console.log(resp);
+        var dataContainer = $('#info-body');
+        dataContainer.empty();
+        var dataList = '';
+
+        for(var i = 0; i < Object.keys(resp.data).length; i++){
+          dataList += '<li>Reporter Name:'+resp.data[i].reporter_name+'</li>';
+          dataList += '<li>Address:'+resp.data[i].reporter_address+'</li>';
+          dataList += '<li>Latitude:'+resp.data[i].latitude+'</li>';
+          dataList += '<li>Longitude:'+resp.data[i].longitude+'</li>';
+          dataList += '<li>Contact:'+resp.data[i].reporter_contact+'</li>';
+          dataList += '<li>Details:'+resp.data[i].reporter_details+'</li>';
+          dataList += '<li>Status:'+resp.data[i].status+'</li>';
+          dataList += '<li>Date:'+resp.data[i].datetime+'</li>';
+          dataList += '<hr>';
+        }
+
+        dataContainer.append(dataList);
+      }
+    });
+  }
+
+  getCrimes();
 
 });
 </script>

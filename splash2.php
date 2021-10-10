@@ -134,6 +134,9 @@ $( document ).ready(function() {
     var markersLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+    
+
+
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
@@ -233,6 +236,8 @@ $( document ).ready(function() {
                 var tableData = data;
                 //console.log("sdsdsds")
                 //console.log(tableData)
+                dataAll = [];
+                table.clear().draw()
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
                     //console.log(tableData.data[i])
                     something = tableData.data[i];

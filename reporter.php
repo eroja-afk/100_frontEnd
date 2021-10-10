@@ -85,7 +85,7 @@
                                 <input class="form-control" id="address" type="text" name="address" placeholder="Enter Address">
                             </div>
                             <div class="mb-3">
-                                <label for="details" class="form-label">Reporters Details</label>
+                                <label for="details" class="form-label">Report Details</label>
                                 <textarea class="form-control" id="details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
                             </div>
                             <div class="mb-3">
@@ -99,19 +99,19 @@
                             <div class="mb-3">
                                 <select class="form-control" id="fhuman" name="For Human">
                                     <option value="0">Select Option</option>
-                                    <option value="murder">Murder</option>
-                                    <option value="homi">Homicide</option>
-                                    <option value="pi">Physical Injuries</option>
-                                    <option value="rape">Rape</option>
+                                    <option value="Murder">Murder</option>
+                                    <option value="Homicide">Homicide</option>
+                                    <option value="Physical Injury">Physical Injuries</option>
+                                    <option value="Rape">Rape</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
                                 <select class="form-control" id="fprop" name="For Property">
                                     <option value="0">Select Option</option>
-                                    <option value="robbery">Robbery</option>
-                                    <option value="theft">Theft</option>
-                                    <option value="carnap">Carnapping</option>
+                                    <option value="Robbery">Robbery</option>
+                                    <option value="Theft">Theft</option>
+                                    <option value="Carnapping">Carnapping</option>
                                 </select>
                             </div>
                             <button class="btn btn-success form-control" id="submitCrime">Report Crime</button>
@@ -298,6 +298,65 @@ $( document ).ready(function() {
                 //console.log(markerData)
             });
 
+
+    }
+
+    function reportCrime(){
+            var lat= $('#la').val();
+            var long= $('#lo').val();
+
+            
+
+            var formCrimeType = { //Fetch form data
+            'crime_on'      :$('#fhuman').val(),
+            'crime_type'    :$('#fprop').val()
+            };
+
+            $.ajax({ //Process the form using $.ajax()
+                type      : 'GET', //Method type
+                url       : 'https://recas-api.vercel.app/getCrimeType', //Your form processing file URL
+                data      : formCrimeType, //Forms name
+                dataType  : 'json',
+                success   : function(data) {
+                    event.preventDefault();
+                                if (data.status == 0) { 
+
+                                    var postForm = { //Fetch form data
+                                        'reporters_name'     : $('#name').val(),
+                                        'reporters_contact'     : $('#contact').val(),
+                                        'reporters_address'     : $('#address').val(),
+                                        'report_details'     : $('#details').val(),
+                                        'latitude'     : $('#la').val(),
+                                        'longitude'     : $('#lo').val(),
+                                        'crimeType_id'     :data[0].data,
+                                        
+                                    };
+                                    console.log(data[0].data)
+
+                                    $.ajax({ //Process the form using $.ajax()
+                                        type      : 'POST', //Method type
+                                        url       : 'https://recas-api.vercel.app/reportCrime', //Your form processing file URL
+                                        data      : postForm, //Forms name
+                                        dataType  : 'json',
+                                        success   : function(data) {
+                                            event.preventDefault();
+                                            if (data == 0) { //If fails
+                                                //console.log("asd")
+                                                alert("success"); 
+                                            }
+                                            else {
+                                                alert("failed");
+                                            }
+                                        }
+                                    });
+                                }else {
+                                    alert("failed");
+                                }
+                            }
+            });
+
+            
+            event.preventDefault(); //Prevent the default submit
 
     }
 

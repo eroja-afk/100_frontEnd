@@ -36,7 +36,7 @@
       $_SESSION['userId'] = $data['data'][0]['Id'];
       $type = $data['data'][0]['type'];
       if(strcasecmp($type, 'dispatcher') == 0){
-        header('Location: splash2.php');
+        header('Location: reporter.php');
       } else if(strcasecmp($type, 'units') == 0){
         header('Location: units.php');
       }

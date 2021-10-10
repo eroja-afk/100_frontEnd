@@ -85,7 +85,7 @@
                                 <input class="form-control" id="address" type="text" name="address" placeholder="Enter Address">
                             </div>
                             <div class="mb-3">
-                                <label for="details" class="form-label">Reporters Details</label>
+                                <label for="details" class="form-label">Report Details</label>
                                 <textarea class="form-control" id="details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
                             </div>
                             <div class="mb-3">
@@ -99,19 +99,19 @@
                             <div class="mb-3">
                                 <select class="form-control" id="fhuman" name="For Human">
                                     <option value="0">Select Option</option>
-                                    <option value="murder">Murder</option>
-                                    <option value="homi">Homicide</option>
-                                    <option value="pi">Physical Injuries</option>
-                                    <option value="rape">Rape</option>
+                                    <option value="Murder">Murder</option>
+                                    <option value="Homicide">Homicide</option>
+                                    <option value="Physical Injury">Physical Injuries</option>
+                                    <option value="Rape">Rape</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
                                 <select class="form-control" id="fprop" name="For Property">
                                     <option value="0">Select Option</option>
-                                    <option value="robbery">Robbery</option>
-                                    <option value="theft">Theft</option>
-                                    <option value="carnap">Carnapping</option>
+                                    <option value="Robbery">Robbery</option>
+                                    <option value="Theft">Theft</option>
+                                    <option value="Carnapping">Carnapping</option>
                                 </select>
                             </div>
                             <button class="btn btn-success form-control" id="submitCrime">Report Crime</button>
@@ -122,28 +122,27 @@
                 <div class="col-sm-8">
                     <div id="mapid"></div>
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-warning">Remove Current Marker</button>
-                        <button type="button" class="btn btn-danger">Remove All Markers</button>
-                        <button type="button" class="btn btn-primary">Show on map(from table)</button>
+                        <button id="rmvmarker"type="button" class="btn btn-warning">Remove Current Marker</button>
+                        <button id="rmvAllMarkers"type="button" class="btn btn-danger">Remove All Markers</button>
+                       <button id="tableToMap"type="button" class="btn btn-primary">Show on map</button>
                     </div>
                 </div>
             </div>
                 <table id="table_id" class="display">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
+                        <th>Crime On</th>
+                        <th>Crime Type</th>
+                        <th>Date</th>
+                        <th>Reporter Name</th>
+                        <th>Reporter Contact</th>
+                        <th>Reporter Address</th>
+                        <th>latitude</th>
+                        <th>longitude</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Row 1 Data 1</td>
-                        <td>Row 1 Data 2</td>
-                    </tr>
-                    <tr>
-                        <td>Row 2 Data 1</td>
-                        <td>Row 2 Data 2</td>
-                    </tr>
+                    
                     </tbody>
                 </table>
         
@@ -169,8 +168,10 @@ function showChoice(choice){
 
 $( document ).ready(function() { 
 
-    var table = $('#table_id').DataTable();  
+    var table = $('#table_id').DataTable();
+    table.columns([6,7]).visible(false);  
     var dataAll = [];
+    var filteredRows;
     var markersLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
@@ -218,11 +219,11 @@ $( document ).ready(function() {
         deleteMarker();
     })
 
-    $("#showOnMap").click(function(){
-        showCrimes();
+    $("#tableToMap").click(function(){
+        selectOnlyFiltered();
     })
 
-    $("#rmvAllLarkers").click(function(){
+    $("#rmvAllMarkers").click(function(){
         markersLayer.clearLayers();
         $("#lo").val(null);
         $("#la").val(null);
@@ -232,6 +233,24 @@ $( document ).ready(function() {
 
     $("#fhuman").hide();
     $("#fprop").hide();
+
+    function selectOnlyFiltered(){
+        var tempData= {
+            latitude:  0,
+            longitude:  0
+        }
+
+        filteredRows = table.rows({filter: 'applied'});
+        //console.log(filteredRows.data()[0])
+        for(var i = 0 ; i < filteredRows.data().length ; i ++){
+            // console.log(filteredRows.data()[i][6])
+            // console.log(filteredRows.data()[i][7])
+
+            tempData.latitude = filteredRows.data()[i][6];
+            tempData.longitude = filteredRows.data()[i][7];
+        }
+        makeMarker(tempData)
+    }
 
     function deleteMarker(){
         map.removeLayer(marker);
@@ -245,12 +264,14 @@ $( document ).ready(function() {
         markersLayer.addTo(map); 
     }
 
+    
+
     function addTableRow(data){
-         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
+         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude]).draw(false);
     }
 
     
-
+    showCrimes();
     
     function showCrimes(){
         var something;
@@ -277,6 +298,65 @@ $( document ).ready(function() {
                 //console.log(markerData)
             });
 
+
+    }
+
+    function reportCrime(){
+            var lat= $('#la').val();
+            var long= $('#lo').val();
+
+            
+
+            var formCrimeType = { //Fetch form data
+            'crime_on'      :$('#fhuman').val(),
+            'crime_type'    :$('#fprop').val()
+            };
+
+            $.ajax({ //Process the form using $.ajax()
+                type      : 'GET', //Method type
+                url       : 'https://recas-api.vercel.app/getCrimeType', //Your form processing file URL
+                data      : formCrimeType, //Forms name
+                dataType  : 'json',
+                success   : function(data) {
+                    event.preventDefault();
+                                if (data.status == 0) { 
+
+                                    var postForm = { //Fetch form data
+                                        'reporters_name'     : $('#name').val(),
+                                        'reporters_contact'     : $('#contact').val(),
+                                        'reporters_address'     : $('#address').val(),
+                                        'report_details'     : $('#details').val(),
+                                        'latitude'     : $('#la').val(),
+                                        'longitude'     : $('#lo').val(),
+                                        'crimeType_id'     :data[0].data,
+                                        
+                                    };
+                                    console.log(data[0].data)
+
+                                    $.ajax({ //Process the form using $.ajax()
+                                        type      : 'POST', //Method type
+                                        url       : 'https://recas-api.vercel.app/reportCrime', //Your form processing file URL
+                                        data      : postForm, //Forms name
+                                        dataType  : 'json',
+                                        success   : function(data) {
+                                            event.preventDefault();
+                                            if (data == 0) { //If fails
+                                                //console.log("asd")
+                                                alert("success"); 
+                                            }
+                                            else {
+                                                alert("failed");
+                                            }
+                                        }
+                                    });
+                                }else {
+                                    alert("failed");
+                                }
+                            }
+            });
+
+            
+            event.preventDefault(); //Prevent the default submit
 
     }
 

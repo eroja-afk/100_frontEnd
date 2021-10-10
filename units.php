@@ -118,15 +118,22 @@ $( document ).ready(function() {
     });
 
 
-    var marker,circle;
+    var marker = null;
+    var circle;
 
     var markersLayer = new L.LayerGroup();
 
     function makeMarker(data){
       marker = L.marker([data.lat,data.long]);
-      markersLayer.clearLayers();
+      if(marker){
+        markersLayer.clearLayers();
+        map._onResize(); 
+        // marker.addTo(markersLayer);
+        // markersLayer.addTo(map);
+      }
       marker.addTo(markersLayer);
       markersLayer.addTo(map);
+      // markersLayer.clearLayers();
     }
 
     function getPosition(position){
@@ -150,7 +157,7 @@ $( document ).ready(function() {
 
       // map.fitBounds(featureGroup.getBounds())
 
-      console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
+      // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
 
       $.ajax({ //Process the form using $.ajax()
                   type      : 'POST', //Method type
@@ -203,9 +210,9 @@ $( document ).ready(function() {
 
   getCrimes();
 
-  setInterval(() =>{
-    getCrimes();
-  }, 5000);
+  // setInterval(() =>{
+  //   getCrimes();
+  // }, 5000);
 
 });
 </script>

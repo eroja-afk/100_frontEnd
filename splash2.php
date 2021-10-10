@@ -99,11 +99,12 @@
 
             <div id="mapid"> </div>
             <div style="text-align:right">
-                <input type="button" id="rmvmarker" value="Remove Marker" />
-                <input type="button" id="showOnMap" value="Show on Map">
+                <input type="button" id="rmvmarker" value="Remove Current Marker" />
+                <input type="button" id="rmvAllLarkers" value="Remove All Markers" />
+                
             </div>
 
-            
+            <input type="button" id="showOnMap" value="Show on Map">
             <table id="table_id" class="display">
             <thead>
                 <tr>
@@ -153,6 +154,14 @@ $( document ).ready(function() {
 
             alert(result.latlng)
             marker = L.marker(result.latlng,{draggable:"true"}).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+
+            marker.on("dragend",function(e){
+
+            var changedPos = e.target.getLatLng();
+            //this.bindPopup(chagedPos.toString()).openPopup();
+                $("#lo").val(changedPos.lng);
+                $("#la").val(changedPos.lat);
+            });
             });
         }
     });
@@ -165,6 +174,10 @@ $( document ).ready(function() {
 
     $("#showOnMap").click(function(){
         showCrimes();
+    })
+
+    $("#rmvAllLarkers").click(function(){
+        map._panes.markerPane.remove();
     })
     
 
@@ -196,6 +209,8 @@ $( document ).ready(function() {
     function addTableRow(data){
          table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
     }
+
+    
 
     
     function showCrimes(){

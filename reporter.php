@@ -122,28 +122,25 @@
                 <div class="col-sm-8">
                     <div id="mapid"></div>
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-warning">Remove Current Marker</button>
-                        <button type="button" class="btn btn-danger">Remove All Markers</button>
-                        <button type="button" class="btn btn-primary">Show on map(from table)</button>
+                        <button id="rmvmarker"type="button" class="btn btn-warning">Remove Current Marker</button>
+                        <button id="rmvAllMarkers"type="button" class="btn btn-danger">Remove All Markers</button>
+                        <button id="showOnMap"type="button" class="btn btn-primary">Show on map</button>
                     </div>
                 </div>
             </div>
                 <table id="table_id" class="display">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
+                        <th>Crime On</th>
+                        <th>Crime Type</th>
+                        <th>Date</th>
+                        <th>Reporter Name</th>
+                        <th>Reporter Contact</th>
+                        <th>Reporter Address</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Row 1 Data 1</td>
-                        <td>Row 1 Data 2</td>
-                    </tr>
-                    <tr>
-                        <td>Row 2 Data 1</td>
-                        <td>Row 2 Data 2</td>
-                    </tr>
+                    
                     </tbody>
                 </table>
         
@@ -222,7 +219,7 @@ $( document ).ready(function() {
         showCrimes();
     })
 
-    $("#rmvAllLarkers").click(function(){
+    $("#rmvAllMarkers").click(function(){
         markersLayer.clearLayers();
         $("#lo").val(null);
         $("#la").val(null);

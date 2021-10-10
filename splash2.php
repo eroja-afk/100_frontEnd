@@ -131,6 +131,7 @@ $( document ).ready(function() {
 
     var table = $('#table_id').DataTable();  
     var dataAll = [];
+    var markersLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -153,7 +154,9 @@ $( document ).ready(function() {
             $("#la").val(result.latlng.lat);
 
             alert(result.latlng)
-            marker = L.marker(result.latlng,{draggable:"true"}).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+            marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+
+            markersLayer.addTo(map); 
 
             marker.on("dragend",function(e){
 
@@ -177,7 +180,10 @@ $( document ).ready(function() {
     })
 
     $("#rmvAllLarkers").click(function(){
-        map._panes.markerPane.remove();
+        markersLayer.clearLayers();
+        $("#lo").val(null);
+        $("#la").val(null);
+        marker = null;
     })
     
 
@@ -199,11 +205,14 @@ $( document ).ready(function() {
 
     function deleteMarker(){
         map.removeLayer(marker);
+        $("#lo").val(null);
+        $("#la").val(null);
         marker= null;
     }
 
     function makeMarker(data){
-        L.marker([data.latitude,data.longitude]).addTo(map).bindPopup(data);
+        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(markersLayer).bindPopup(data);
+        markersLayer.addTo(map); 
     }
 
     function addTableRow(data){

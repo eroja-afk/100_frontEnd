@@ -97,24 +97,25 @@
             </form>
         </div>
 
-        <div id="mapid"></div>
-        
+            <div id="mapid"> </div>
+            <div style="text-align:right">
+                <input type="button" id="rmvmarker" value="Remove Marker" />
+                <input type="button" id="showOnMap" value="Show on Map">
+            </div>
+
+            
             <table id="table_id" class="display">
             <thead>
                 <tr>
-                    <th>Column 1</th>
-                    <th>Column 2</th>
+                    <th>Crime Type</th>
+                    <th>Date Reported</th>
+                    <th>Reporter Name</th>
+                    <th>Reporter Contact</th>
+                    <th>Reporter Address</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Row 1 Data 1</td>
-                    <td>Row 1 Data 2</td>
-                </tr>
-                <tr>
-                    <td>Row 2 Data 1</td>
-                    <td>Row 2 Data 2</td>
-                </tr>
+                
                 </tbody>
             </table>
         
@@ -126,7 +127,8 @@
 <script>
 $( document ).ready(function() { 
 
-    $('#table_id').DataTable();  
+    var table = $('#table_id').DataTable();  
+    var dataAll = [];
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -137,21 +139,29 @@ $( document ).ready(function() {
     var geocodeService = L.esri.Geocoding.geocodeService();
     var longitude;
     var latitude;
+    var marker = null;
 
     map.on('click', function (e) {
-        geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-        if (error) {
-            return;
-        }
-        var test = result.latlng;
-        latitude = test.lat;
-        longitude = test.lng;
-        console.log(test,latitude,longitude);
+        if(marker == null){
+            geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+            if (error) {
+                return;
+            }
 
-        alert(result.latlng)
-        L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
-        });
+            alert(result.latlng)
+            marker = L.marker(result.latlng,{draggable:"true"}).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+            });
+        }
     });
+
+    $("#rmvmarker").click(function(){
+        deleteMarker();
+    })
+
+    $("#showOnMap").click(function(){
+        showCrimes();
+    })
+    
 
     $("#fhuman").hide();
     $("#fprop").hide();
@@ -167,6 +177,47 @@ $( document ).ready(function() {
             $("#fhuman").hide();
             $("#fprop").hide();
         }
+    }
+
+    function deleteMarker(){
+        map.removeLayer(marker);
+        marker= null;
+    }
+
+    function makeMarker(data){
+        L.marker([data.latitude,data.longitude],{draggable:"true"}).addTo(map).bindPopup(data);
+    }
+
+    function addTableRow(data){
+         table.row.add([data.crimeType_id,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
+        
+    }
+
+    
+    function showCrimes(){
+        var something;
+        $.ajax({ 
+            method: "GET", 
+            url: "https://recas-api.vercel.app/getAllCrimes",
+            dataType:"json"
+            }).done(function( data ) { 
+                //console.log(data)
+                var tableData = data;
+                //console.log("sdsdsds")
+                //console.log(tableData)
+                for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
+                    //console.log(tableData.data[i])
+                    something = tableData.data[i]
+                    dataAll.push(tableData.data[i]);
+                    makeMarker(tableData.data[i]);
+                    addTableRow(something);
+
+
+                }
+                //console.log(markerData)
+            });
+
+
     }
 
 });

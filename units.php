@@ -150,7 +150,7 @@ $( document ).ready(function() {
 
       // map.fitBounds(featureGroup.getBounds())
 
-      // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
+      console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
 
       $.ajax({ //Process the form using $.ajax()
                   type      : 'POST', //Method type

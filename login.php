@@ -37,7 +37,7 @@
       $type = $data['data'][0]['type'];
       if(strcasecmp($type, 'dispatcher') == 0){
         header('Location: reporter.php');
-      } else if(strcasecmp($type, 'units') == 0){
+      } else if(strcasecmp($type, 'unit') == 0){
         header('Location: units.php');
       }
     }
@@ -68,7 +68,6 @@
       <input type="password" id="password" class="fadeIn third" name="password" placeholder="Enter Password">
       <input type="submit" class="fadeIn fourth" name="submit" value="Login">
     </form>
-    <a href="units.php" class="nav-link">Login units - Testing</a>
 
     <!-- Forget Password -->
     <!-- <div id="formFooter">

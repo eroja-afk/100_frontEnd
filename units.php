@@ -82,10 +82,16 @@
             <div id="mapid"></div>
           </div>
           <div class="col-sm-4" id="crimeInfo">
-            <div class="card">
+            <div class="card bg-light">
               <div class="card-header bg-primary">Report Crime Information</div>
               <div class="card-body" id="info-body">
-
+              <div class="position-relative">
+                <div class="position-absolute top-50 start-50">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
           </div>
@@ -101,9 +107,9 @@ $( document ).ready(function() {
         });
     osm.addTo(map);
         
-    // setInterval(() =>{
-    //     navigator.geolocation.getCurrentPosition(getPosition);
-    // }, 5000);
+    setInterval(() =>{
+        navigator.geolocation.getCurrentPosition(getPosition);
+    }, 5000);
 
     Pusher.logToConsole = true;
 
@@ -114,11 +120,13 @@ $( document ).ready(function() {
 
     var marker,circle;
 
+    var markersLayer = new L.LayerGroup();
+
     function makeMarker(data){
-      if(!marker && !circle) {
-        map.removeLayer(L.marker([data.lat,data.long]))
-        L.marker([data.lat,data.long]).addTo(map);
-      }
+      marker = L.marker([data.lat,data.long]);
+      markersLayer.clearLayers();
+      marker.addTo(markersLayer);
+      markersLayer.addTo(map);
     }
 
     function getPosition(position){
@@ -128,11 +136,17 @@ $( document ).ready(function() {
     var long = position.coords.longitude;
     var accuracy = position.coords.accuracy;
 
-    if(!marker && !circle) {
-      marker = L.marker([lat, long])
-      circle = L.circle([lat, long], {radius: accuracy})
+    marker = L.marker([lat, long])
+    // circle = L.circle([lat, long], {radius: accuracy})
 
-      var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+    markersLayer.clearLayers();
+    // map.removeLayer(circle);
+
+    marker.addTo(markersLayer);
+    markersLayer.addTo(map);
+
+
+    // var featureGroup = L.featureGroup([marker, circle]).addTo(map)
 
       // map.fitBounds(featureGroup.getBounds())
 
@@ -152,17 +166,12 @@ $( document ).ready(function() {
                               }
               });
 
-    var channel = pusher.subscribe('my-channel');
+  }
+
+  var channel = pusher.subscribe('my-channel');
     channel.bind('my-event', function(data) {
       makeMarker(data);
     });
-        
-    } else {
-      map.removeLayer(marker)
-      map.removeLayer(circle)
-    }
-
-  }
 
   const getCrimes = () => {
     $.ajax({ //Process the form using $.ajax()
@@ -170,7 +179,7 @@ $( document ).ready(function() {
       url       : 'https://recas-api.vercel.app/getAllCrimes', //Your form processing file URL
       dataType  : 'json',
       success   : function(resp) {
-        console.log(resp);
+        // console.log(resp);
         var dataContainer = $('#info-body');
         dataContainer.empty();
         var dataList = '';
@@ -193,6 +202,10 @@ $( document ).ready(function() {
   }
 
   getCrimes();
+
+  setInterval(() =>{
+    getCrimes();
+  }, 5000);
 
 });
 </script>

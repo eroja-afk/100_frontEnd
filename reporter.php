@@ -124,7 +124,7 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button id="rmvmarker"type="button" class="btn btn-warning">Remove Current Marker</button>
                         <button id="rmvAllMarkers"type="button" class="btn btn-danger">Remove All Markers</button>
-                        <button id="showOnMap"type="button" class="btn btn-primary">Show on map</button>
+                       <button id="tableToMap"type="button" class="btn btn-primary">Show on map</button>
                     </div>
                 </div>
             </div>
@@ -137,6 +137,8 @@
                         <th>Reporter Name</th>
                         <th>Reporter Contact</th>
                         <th>Reporter Address</th>
+                        <th>latitude</th>
+                        <th>longitude</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -166,8 +168,10 @@ function showChoice(choice){
 
 $( document ).ready(function() { 
 
-    var table = $('#table_id').DataTable();  
+    var table = $('#table_id').DataTable();
+    table.columns([6,7]).visible(false);  
     var dataAll = [];
+    var filteredRows;
     var markersLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
@@ -215,8 +219,8 @@ $( document ).ready(function() {
         deleteMarker();
     })
 
-    $("#showOnMap").click(function(){
-        showCrimes();
+    $("#tableToMap").click(function(){
+        selectOnlyFiltered();
     })
 
     $("#rmvAllMarkers").click(function(){
@@ -230,6 +234,24 @@ $( document ).ready(function() {
     $("#fhuman").hide();
     $("#fprop").hide();
 
+    function selectOnlyFiltered(){
+        var tempData= {
+            latitude:  0,
+            longitude:  0
+        }
+
+        filteredRows = table.rows({filter: 'applied'});
+        //console.log(filteredRows.data()[0])
+        for(var i = 0 ; i < filteredRows.data().length ; i ++){
+            // console.log(filteredRows.data()[i][6])
+            // console.log(filteredRows.data()[i][7])
+
+            tempData.latitude = filteredRows.data()[i][6];
+            tempData.longitude = filteredRows.data()[i][7];
+        }
+        makeMarker(tempData)
+    }
+
     function deleteMarker(){
         map.removeLayer(marker);
         $("#lo").val(null);
@@ -242,12 +264,14 @@ $( document ).ready(function() {
         markersLayer.addTo(map); 
     }
 
+    
+
     function addTableRow(data){
-         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
+         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude]).draw(false);
     }
 
     
-
+    showCrimes();
     
     function showCrimes(){
         var something;

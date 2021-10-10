@@ -164,9 +164,14 @@ function showChoice(choice){
 
 $( document ).ready(function() { 
 
-    $('#table_id').DataTable();  
+    var table = $('#table_id').DataTable();  
+    var dataAll = [];
+    var markersLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+    
+
+
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
@@ -175,24 +180,100 @@ $( document ).ready(function() {
     var geocodeService = L.esri.Geocoding.geocodeService();
     var longitude;
     var latitude;
+    var marker = null;
 
     map.on('click', function (e) {
-        geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-        if (error) {
-            return;
-        }
-        var test = result.latlng;
-        latitude = test.lat;
-        longitude = test.lng;
-        console.log(test,latitude,longitude);
+        if(marker == null){
+            geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+            if (error) {
+                return;
+            }
+            $("#lo").val(result.latlng.lng);
+            $("#la").val(result.latlng.lat);
 
-        alert(result.latlng)
-        L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
-        });
+            alert(result.latlng)
+            marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+
+            markersLayer.addTo(map); 
+
+            marker.on("dragend",function(e){
+
+            var changedPos = e.target.getLatLng();
+            //this.bindPopup(chagedPos.toString()).openPopup();
+                $("#lo").val(changedPos.lng);
+                $("#la").val(changedPos.lat);
+            });
+            });
+        }
     });
+
+    
+
+    $("#rmvmarker").click(function(){
+        deleteMarker();
+    })
+
+    $("#showOnMap").click(function(){
+        showCrimes();
+    })
+
+    $("#rmvAllLarkers").click(function(){
+        markersLayer.clearLayers();
+        $("#lo").val(null);
+        $("#la").val(null);
+        marker = null;
+    })
+    
 
     $("#fhuman").hide();
     $("#fprop").hide();
+
+    function deleteMarker(){
+        map.removeLayer(marker);
+        $("#lo").val(null);
+        $("#la").val(null);
+        marker= null;
+    }
+
+    function makeMarker(data){
+        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(markersLayer).bindPopup(data);
+        markersLayer.addTo(map); 
+    }
+
+    function addTableRow(data){
+         table.row.add([data.against,data.type,data.datetime,data.reporter_name,data.reporter_contact,data.reporter_address]).draw(false);
+    }
+
+    
+
+    
+    function showCrimes(){
+        var something;
+        $.ajax({ 
+            method: "GET", 
+            url: "https://recas-api.vercel.app/getAllCrimes",
+            dataType:"json"
+            }).done(function( data ) { 
+                //console.log(data)
+                var tableData = data;
+                //console.log("sdsdsds")
+                //console.log(tableData)
+                dataAll = [];
+                table.clear().draw()
+                for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
+                    //console.log(tableData.data[i])
+                    something = tableData.data[i];
+                    dataAll.push(tableData.data[i]);
+                    makeMarker(tableData.data[i]);
+                    addTableRow(something);
+
+
+                }
+                //console.log(markerData)
+            });
+
+
+    }
 
 });
 

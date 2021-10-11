@@ -34,6 +34,7 @@
     } else {
       $data = json_decode($server_output, true);
       $_SESSION['userId'] = $data['data'][0]['Id'];
+      $_SESSION['user'] = $data['data'][0]['unit_no'];
       $type = $data['data'][0]['type'];
       if(strcasecmp($type, 'dispatcher') == 0){
         header('Location: reporter.php');

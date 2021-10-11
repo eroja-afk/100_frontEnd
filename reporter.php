@@ -130,14 +130,14 @@
                 <div class="mb-3">
                     <label for="searchDetails" class="form-label">Crimes Against</label>
                     <select class="form-control" id="searchchoice" >
-                    <option value="null">Select Option</option>
+                    <option value="">Select Option</option>
                     <option value="0">Against Human</option>
                     <option value="1">Against Property</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <select class="form-control" id="searchcase" >
-                        <option value="null">Select Option</option>
+                        <option value="">Select Option</option>
                         <option value="1">-Murder</option>
                         <option value="2">-Homicide</option>
                         <option value="3">-Physical Injuries</option>
@@ -148,19 +148,19 @@
                     </select>
                 </div>
                    <select class="form-control" id="searchstatus" >
-                        <option value="null">Select Option</option>
+                        <option value="">Select Option</option>
                         <option value="1">Ongoing</option>
                         <option value="2">Finished</option>
                     </select>
                     <select class="form-control" id="searchbarangay">
-                        <option value="null">Select Option</option>
+                        <option value="">Select Option</option>
                         <option value="1">brgy1</option>
                         <option value="2">brgy2</option>
                         <option value="3">brgy3</option>
                         <option value="4">brgy4</option>
                     </select>          
                     <label class="form-label">Reporter Contact</label>
-                    <input class="form-control" id="searchcontact" type="text" placeholder="Reporter Contact"></input>
+                    <input class="form-control" id="searchcontact" type="text" placeholder="Reporter Contact" value=""></input>
                     <p>From: <input type="text" id="searchfrom" class="datepicker" ></p>
                     <p>To: <input type="text" id="searchto" class="datepicker" ></p>
                     <input type="button" id="filterbtn" value="Filter"></input>
@@ -335,10 +335,8 @@ $( document ).ready(function() {
             url: "https://recas-api.vercel.app/getAllCrimes",
             dataType:"json"
             }).done(function( data ) { 
-                //console.log(data)
                 var tableData = data;
-                //console.log("sdsdsds")
-                //console.log(tableData)
+
                 dataAll = [];
                 table.clear().draw()
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
@@ -398,7 +396,7 @@ $( document ).ready(function() {
 
     function filterCrime(){
         var contact ='null';
-        console.log(contact)
+        //console.log(contact)
         
 
         var postForm = { //Fetch form data
@@ -409,6 +407,13 @@ $( document ).ready(function() {
                 'contact'     :         contact,
                 'from'     :            $("#searchfrom").val(),
                 'to'     :              $("#searchto").val()
+                // 'choice'     :          $("#searchchoice").val(),
+                // 'crimecase'     :       null,
+                // 'status'     :          null,
+                // 'searchbarangay'     :  null,
+                // 'contact'     :         null,
+                // 'from'     :            $("#searchfrom").val(),
+                // 'to'     :              $("#searchto").val()
             };
 
         $.ajax({ //Process the form using $.ajax()

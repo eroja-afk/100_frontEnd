@@ -42,7 +42,6 @@
         header('Location: units.php');
       }
     }
-
     curl_close ($ch);
   }
 ?>

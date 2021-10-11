@@ -139,6 +139,7 @@ $( document ).ready(function() {
       marker.push({id: data.id, marker:tempMarker});
     }
 
+
     function getPosition(position){
     // console.log(position)
     var id = $('#userId').val();
@@ -185,8 +186,8 @@ $( document ).ready(function() {
                   }, //Forms name
                   dataType  : 'json',
                   success   : function(data) {
-                                  console.log(data);
-                              }
+                      console.log(data);
+                  }
               });
 
   }

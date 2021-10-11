@@ -254,6 +254,7 @@
                 <table id="table_id" class="display">
                 <thead>
                     <tr>
+                        <th>id</th>
                         <th>Crime On</th>
                         <th>Crime Type</th>
                         <th>Date</th>
@@ -280,7 +281,8 @@
 
 <script>
     var table = $('#table_id').DataTable();
-    table.columns([6,7]).visible(false);  
+    table.columns([6,7]).visible(false); 
+    table.columns([0]).visible(false);   
 
     var dataAll = [];
     var filteredRows;
@@ -403,6 +405,7 @@ $( document ).ready(function() {
 
     function selectOnlyFiltered(){
         var tempData= {
+            id: 1000,
             latitude:  0,
             longitude:  0
         }
@@ -412,9 +415,9 @@ $( document ).ready(function() {
         for(var i = 0 ; i < filteredRows.data().length ; i ++){
             // console.log(filteredRows.data()[i][6])
             // console.log(filteredRows.data()[i][7])
-
-            tempData.latitude = filteredRows.data()[i][6];
-            tempData.longitude = filteredRows.data()[i][7];
+            tempData.id = filteredRows.data()[i][0];
+            tempData.latitude = filteredRows.data()[i][7];
+            tempData.longitude = filteredRows.data()[i][8];
             makeMarker(tempData,markersLayer)
         }
         
@@ -444,7 +447,7 @@ $( document ).ready(function() {
 
     function addTableRow(data){
         var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
-        table.row.add([data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' id='marker"+data.id+"' value='Show' onclick='showMarker(event)'>Show</button>"]).draw(false);
+        table.row.add([data.id,data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' id='marker"+data.id+"' value='Show' onclick='showMarker(event)'>Show</button>"]).draw(false);
     } 
     
     
@@ -547,13 +550,15 @@ $( document ).ready(function() {
 
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
-            url       : 'http://localhost:3000/searchCrime',
+            url       : 'https://recas-api.vercel.app/searchCrime',
             //url       : 'localhost:3000/reportCrime', //Your form processing file URL
             data      : postForm, //Forms name
             dataType  : 'json',
             success   : function(data) {
-                console.log(data)
-                
+                for(var i = 0 ; i < Object.keys(data.data).length ; i++){
+                    console.log(data)
+                    makeMarker(data.data[i],markersLayer);
+                }
             }
             
         });

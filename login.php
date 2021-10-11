@@ -1,7 +1,6 @@
 <?php 
-  header('Access-Control-Allow-Origin: *'); 
-
   session_start();
+  header('Access-Control-Allow-Origin: *'); 
 
   if(isset($_POST['submit'])){
     $ch = curl_init();
@@ -11,7 +10,8 @@
       'password' => $_POST['password']
     );
 
-    curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
+    // curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
+    curl_setopt($ch, CURLOPT_URL,"http://localhost:3000/login");
     curl_setopt($ch, CURLOPT_FAILONERROR, true);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -33,7 +33,7 @@
       $error_msg = curl_error($ch);
     } else {
       $data = json_decode($server_output, true);
-      $_SESSION['userId'] = $data['data'][0]['Id'];
+      $_SESSION['userId'] = $data['data'][0]['id'];
       $_SESSION['user'] = $data['data'][0]['unit_no'];
       $type = $data['data'][0]['type'];
       if(strcasecmp($type, 'dispatcher') == 0){

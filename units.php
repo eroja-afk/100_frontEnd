@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <html>
     <head>
     	<link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.css">
@@ -63,6 +64,7 @@
     <body>
     <nav class="navbar navbar-expand-xl navbar-dark bg-primary">
   			<div class="container-fluid">
+          <input type="hidden" value="<?php echo $_SESSION['userId']; ?>" id="userId">
     			<a class="navbar-brand" href="#" style="font-weight: bold" >RECAS</a>
     			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       				<span class="navbar-toggler-icon"></span>
@@ -109,7 +111,7 @@ $( document ).ready(function() {
         
     setInterval(() =>{
         navigator.geolocation.getCurrentPosition(getPosition);
-    }, 5000);
+    }, 3000);
 
     Pusher.logToConsole = true;
 
@@ -118,54 +120,68 @@ $( document ).ready(function() {
     });
 
 
-    var marker = null;
+    var marker = [];
     var circle;
 
     var markersLayer = new L.LayerGroup();
 
     function makeMarker(data){
-      marker = L.marker([data.lat,data.long]);
-      if(marker){
-        markersLayer.clearLayers();
-        map._onResize(); 
-        // marker.addTo(markersLayer);
-        // markersLayer.addTo(map);
+      for(var i = 0; i < Object.keys(marker).length; i++){
+        var found = marker[i].id;
+        if(found === data.id){
+          map.removeLayer(marker[i].marker)
+          marker.splice({id: data.id});
+          markersLayer.clearLayers();
+        }
       }
-      marker.addTo(markersLayer);
+      var tempMarker = L.marker([data.lat,data.long]).addTo(markersLayer);
       markersLayer.addTo(map);
-      // markersLayer.clearLayers();
+      marker.push({id: data.id, marker:tempMarker});
     }
 
     function getPosition(position){
     // console.log(position)
+    var id = $('#userId').val();
 
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
     var accuracy = position.coords.accuracy;
 
-    marker = L.marker([lat, long])
+    // const found = marker.some(data => data.id === id)
+    for(var i = 0; i < Object.keys(marker).length; i++){
+      var found = marker[i].id;
+      if(found === id){
+        map.removeLayer(marker[i].marker)
+        marker.splice({id: id});
+      }
+    }
+  
+    var tempMarker = L.marker([lat,long]).addTo(markersLayer);
+    markersLayer.addTo(map);
+    marker.push({id: id, marker:tempMarker});
+
+    // marker = L.marker([lat, long])
     // circle = L.circle([lat, long], {radius: accuracy})
 
-    markersLayer.clearLayers();
+    // markersLayer.clearLayers();
     // map.removeLayer(circle);
 
-    marker.addTo(markersLayer);
-    markersLayer.addTo(map);
+    // marker.addTo(markersLayer);
+    // markersLayer.addTo(map);
 
 
     // var featureGroup = L.featureGroup([marker, circle]).addTo(map)
 
-      // map.fitBounds(featureGroup.getBounds())
-
-      // console.log("Your coordinate is: Lat:"+ lat +" Long: "+ long + " Accuracy: "+ accuracy)
+    // map.fitBounds(featureGroup.getBounds())
 
       $.ajax({ //Process the form using $.ajax()
                   type      : 'POST', //Method type
-                  url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
+                  url       : 'http://localhost:3000/getUnitLocation', //Your form processing file URL
                   data      : {
                     lat: lat,
                     long: long,
-                    accuracy: accuracy
+                    accuracy: accuracy,
+                    userId : id
                   }, //Forms name
                   dataType  : 'json',
                   success   : function(data) {

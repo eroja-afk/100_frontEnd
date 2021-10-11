@@ -192,8 +192,8 @@ $( document ).ready(function() {
 
   }
 
-  var channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
+  var channel = pusher.subscribe('units');
+    channel.bind('get-events', function(data) {
       makeMarker(data);
     });
 

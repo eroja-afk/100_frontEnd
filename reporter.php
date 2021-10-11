@@ -87,8 +87,8 @@
                                 <label for="details" class="form-label">Crimes Against</label>
                                 <select class="form-control" id="choice" onclick="showChoice(this.value)">
                                 <option value="null">Select Option</option>
-                                <option value="Human">Against Human</option>
-                                <option value="Property">Against Property</option>
+                                <option value="0">Against Human</option>
+                                <option value="1">Against Property</option>
                                 </select>
                             </div>
                             <div class="mb-3">

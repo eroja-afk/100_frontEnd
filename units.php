@@ -129,7 +129,7 @@ $( document ).ready(function() {
       for(var i = 0; i < Object.keys(marker).length; i++){
         var found = marker[i].id;
         if(found === data.id){
-          map.removeLayer(marker[i].marker)
+          // map.removeLayer(marker[i].marker)
           marker.splice({id: data.id});
           markersLayer.clearLayers();
         }

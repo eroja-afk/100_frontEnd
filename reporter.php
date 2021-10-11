@@ -52,6 +52,79 @@
     			</div>
   			</div>
 		</nav><br>
+
+        <!-- Modal -->
+        <div class="modal fade" id="editCrimeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Crime</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="mb-3 row">
+                <label class="form-label">Longitude and Latitude</label>
+                <div class="col-sm-6">
+                    <input id="edit_lo" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                </div>
+                <div class="col-sm-6">
+                    <input id="edit_la" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Reporters Name</label>
+                <input class="form-control" id="edit_name" type="text" name="name" placeholder="Enter Name">
+            </div>
+            <div class="mb-3">
+                <label for="contact" class="form-label">Reporters Contact</label>
+                <input class="form-control" id="edit_contact" type="text" name="contact" placeholder="Enter Contact Details">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Reporters Address</label>
+                <input class="form-control" id="edit_address" type="text" name="address" placeholder="Enter Address">
+            </div>
+            <div class="mb-3">
+                <label for="details" class="form-label">Report Details</label>
+                <textarea class="form-control" id="edit_details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="details" class="form-label">Crimes Against</label>
+                <select class="form-control" id="edit_choice" onclick="showChoice(this.value)">
+                <option value="null">Select Option</option>
+                <option value="0">Against Human</option>
+                <option value="1">Against Property</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <select class="form-control" id="fhuman" name="For Human">
+                    <option value="null">Select Option</option>
+                    <option value="1">Murder</option>
+                    <option value="2">Homicide</option>
+                    <option value="3">Physical Injuries</option>
+                    <option value="4">Rape</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-control" id="fprop" name="For Property">
+                    <option value="null">Select Option</option>
+                    <option value="5">Robbery</option>
+                    <option value="6">Theft</option>
+                    <option value="7">Carnapping</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="contact" class="form-label">Crime Barangay</label>
+                <input class="form-control" id="edit_barangay" type="text" name="contact" placeholder="Enter Barangay">
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit_btn">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
         <div class = "container-fluid">
             <div class="row">
                 <div class="col-sm-3">
@@ -437,7 +510,7 @@ $( document ).ready(function() {
     
 
     function makeMarker(data,usedLayer){
-        var html = "<button class='markerRemove' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button>"
+        var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit Crime</button>"
         var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
         usedLayer.addTo(map); 
         singleDatas.push({id:data.id,marker:tempMarker})
@@ -524,7 +597,7 @@ $( document ).ready(function() {
         //console.log(contact)
 
         var ctype;
-            if($('#searchFcase').val() == ''){
+            if($('#searchFcase').val() == 'null'){
                 ctype = $('#searchPcase').val()
             }else{
                 ctype = $('#searchFcase').val()

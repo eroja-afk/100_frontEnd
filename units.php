@@ -126,17 +126,22 @@ $( document ).ready(function() {
     var markersLayer = new L.LayerGroup();
 
     function makeMarker(data){
+      var flag =0
       for(var i = 0; i < Object.keys(marker).length; i++){
         var found = marker[i].id;
         if(found === data.id){
-          map.removeLayer(marker[i].marker)
-          marker.splice({id: data.id});
-          markersLayer.clearLayers();
+          // map.removeLayer(marker[i].marker)
+          // marker.splice({id: data.id});
+          // markersLayer.clearLayers();
+          flag= 1
         }
       }
-      var tempMarker = L.marker([data.lat,data.long]).addTo(markersLayer);
-      markersLayer.addTo(map);
-      marker.push({id: data.id, marker:tempMarker});
+      if(flag == 0){
+        var tempMarker = L.marker([data.lat,data.long]).addTo(markersLayer);
+        markersLayer.addTo(map);
+        marker.push({id: data.id, marker:tempMarker});
+      }
+      
     }
 
 
@@ -149,17 +154,21 @@ $( document ).ready(function() {
     var accuracy = position.coords.accuracy;
 
     // const found = marker.some(data => data.id === id)
+    var flag = 0;
     for(var i = 0; i < Object.keys(marker).length; i++){
       var found = marker[i].id;
       if(found === id){
-        map.removeLayer(marker[i].marker)
-        marker.splice({id: id});
+        // map.removeLayer(marker[i].marker)
+        // marker.splice({id: id});
+        flag = 1
       }
     }
-  
-    var tempMarker = L.marker([lat,long]).addTo(markersLayer);
-    markersLayer.addTo(map);
-    marker.push({id: id, marker:tempMarker});
+    if(flag == 0){
+      var tempMarker = L.marker([lat,long]).addTo(markersLayer);
+      markersLayer.addTo(map);
+      marker.push({id: id, marker:tempMarker});
+    }
+    
 
     // marker = L.marker([lat, long])
     // circle = L.circle([lat, long], {radius: accuracy})
@@ -177,7 +186,7 @@ $( document ).ready(function() {
 
       $.ajax({ //Process the form using $.ajax()
                   type      : 'POST', //Method type
-                  url       : 'http://localhost:3000/getUnitLocation', //Your form processing file URL
+                  url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
                   data      : {
                     lat: lat,
                     long: long,

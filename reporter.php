@@ -127,45 +127,65 @@
                 </div>
             </div>
             <div>
-                <div class="mb-3">
-                    <label for="searchDetails" class="form-label">Crimes Against</label>
-                    <select class="form-control" id="searchchoice" >
-                    <option value="">Select Option</option>
-                    <option value="0">Against Human</option>
-                    <option value="1">Against Property</option>
-                    </select>
+                <div class="card bg-light">
+                    <div class="card-header">
+                        Filter Options
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                            <div class="mb-3">
+                                <label for="searchchoice" class="form-label">Crimes Against</label>
+                                <select class="form-control" id="searchchoice" onclick="showSearchChoice(this.value)">
+                                <option value="">Select Option</option>
+                                <option value="0">Against Human</option>
+                                <option value="1">Against Property</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-control" id="searchFcase" >
+                                    <option value="">Select Option</option>
+                                    <option value="1">Murder</option>
+                                    <option value="2">Homicide</option>
+                                    <option value="3">Physical Injuries</option>
+                                    <option value="4">Rape</option>
+                                </select>
+                                <select class="form-control" id="searchPcase" >
+                                    <option value="">Select Option</option>
+                                    <option value="5">Robbery</option>
+                                    <option value="6">Theft</option>
+                                    <option value="7">Carnapping</option>
+                                </select>
+                            </div>
+                            </div>
+                            <div class="col-sm-4">
+                            <label for="searchstatus" class="form-label">Status</label>
+                            <select class="form-control" id="searchstatus" >
+                                <option value="">Select Option</option>
+                                <option value="1">Ongoing</option>
+                                <option value="2">Finished</option>
+                            </select>
+                            <label for="searchbarangay" class="form-label">Barangay</label>
+                            <select class="form-control" id="searchbarangay">
+                                <option value="">Select Option</option>
+                                <option value="1">brgy1</option>
+                                <option value="2">brgy2</option>
+                                <option value="3">brgy3</option>
+                                <option value="4">brgy4</option>
+                            </select> 
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label">Reporter Contact</label>
+                                <input class="form-control" id="searchcontact" type="text" placeholder="Reporter Contact" value=""></input>
+                                <p>From: <input type="date" class="form-control" id="searchfrom" class="datepicker" ></p>
+                                <p>To: <input type="date" class="form-control" id="searchto" class="datepicker" ></p>
+                                <input type="button" class="btn btn-primary form-control" id="filterbtn" value="Filter"></input>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <select class="form-control" id="searchcase" >
-                        <option value="">Select Option</option>
-                        <option value="1">-Murder</option>
-                        <option value="2">-Homicide</option>
-                        <option value="3">-Physical Injuries</option>
-                        <option value="4">-Rape</option>
-                        <option value="5">Robbery</option>
-                        <option value="6">Theft</option>
-                        <option value="7">Carnapping</option>
-                    </select>
-                </div>
-                   <select class="form-control" id="searchstatus" >
-                        <option value="">Select Option</option>
-                        <option value="1">Ongoing</option>
-                        <option value="2">Finished</option>
-                    </select>
-                    <select class="form-control" id="searchbarangay">
-                        <option value="">Select Option</option>
-                        <option value="1">brgy1</option>
-                        <option value="2">brgy2</option>
-                        <option value="3">brgy3</option>
-                        <option value="4">brgy4</option>
-                    </select>          
-                    <label class="form-label">Reporter Contact</label>
-                    <input class="form-control" id="searchcontact" type="text" placeholder="Reporter Contact" value=""></input>
-                    <p>From: <input type="text" id="searchfrom" class="datepicker" ></p>
-                    <p>To: <input type="text" id="searchto" class="datepicker" ></p>
-                    <input type="button" id="filterbtn" value="Filter"></input>
-                    
-            </div>
+            
+            </div><br/>
                 <table id="table_id" class="display">
                 <thead>
                     <tr>
@@ -202,6 +222,19 @@ function showChoice(choice){
     }else{
         $("#fhuman").hide();
         $("#fprop").hide();
+    }
+}
+
+function showSearchChoice(choice){
+    if(choice == "0"){
+        $("#searchFcase").show();
+        $("#searchPcase").hide();
+    }else if(choice == "1"){
+        $("#searchPcase").show();
+        $("#searchFcase").hide();
+    }else{
+        $("#searchFcase").hide();
+        $("#searchPcase").hide();
     }
 }
 
@@ -287,6 +320,8 @@ $( document ).ready(function() {
 
     $("#fhuman").hide();
     $("#fprop").hide();
+    $("#searchFcase").hide();
+    $("#searchPcase").hide();
 
     function selectOnlyFiltered(){
         var tempData= {
@@ -397,14 +432,20 @@ $( document ).ready(function() {
     function filterCrime(){
         var contact ='null';
         //console.log(contact)
-        
+
+        var ctype;
+            if($('#searchFcase').val() == ''){
+                ctype = $('#searchPcase').val()
+            }else{
+                ctype = $('#searchFcase').val()
+            }
 
         var postForm = { //Fetch form data
                 'choice'     :          $("#searchchoice").val(),
-                'crimecase'     :       $("#searchcase").val(),
+                'crimecase'     :       ctype,
                 'status'     :          $("#searchstatus").val(),
                 'searchbarangay'     :  $("#searchbarangay").val(),
-                'contact'     :         contact,
+                'contact'     :         $("#searchcontact").val(),
                 'from'     :            $("#searchfrom").val(),
                 'to'     :              $("#searchto").val()
                 // 'choice'     :          $("#searchchoice").val(),
@@ -415,10 +456,11 @@ $( document ).ready(function() {
                 // 'from'     :            $("#searchfrom").val(),
                 // 'to'     :              $("#searchto").val()
             };
+            console.log(postForm)
 
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
-            url       : 'https://recas-api.vercel.app/searchCrime',
+            url       : 'http://localhost:3000/searchCrime',
             //url       : 'localhost:3000/reportCrime', //Your form processing file URL
             data      : postForm, //Forms name
             dataType  : 'json',

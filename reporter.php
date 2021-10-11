@@ -87,8 +87,8 @@
                                 <label for="details" class="form-label">Crimes Against</label>
                                 <select class="form-control" id="choice" onclick="showChoice(this.value)">
                                 <option value="null">Select Option</option>
-                                <option value="0">Against Human</option>
-                                <option value="1">Against Property</option>
+                                <option value="Human">Against Human</option>
+                                <option value="Property">Against Property</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -507,8 +507,8 @@ $( document ).ready(function() {
             
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
-            url       : 'https://recas-api.vercel.app/reportCrime',
-            //url       : 'localhost:3000/reportCrime', //Your form processing file URL
+            // url       : 'https://recas-api.vercel.app/reportCrime',
+            url       : 'localhost:3000/reportCrime', //Your form processing file URL
             data      : postForm, //Forms name
             dataType  : 'json',
             success   : function(data) {

@@ -108,10 +108,21 @@ $( document ).ready(function() {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
     osm.addTo(map);
+
+    var crimeIcon = L.icon({ //add this new icon
+      iconUrl: 'https://icon-library.com/images/gps-pin-icon/gps-pin-icon-3.jpg',
+      shadowUrl: 'resources/leaflet/images/marker-shadow.png',
+      iconSize:     [55, 50], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
         
-    setInterval(() =>{
-        navigator.geolocation.getCurrentPosition(getPosition);
-    }, 3000);
+    // setInterval(() =>{
+    //     navigator.geolocation.getCurrentPosition(getPosition);
+    // }, 3000);
 
     Pusher.logToConsole = true;
 
@@ -121,9 +132,18 @@ $( document ).ready(function() {
 
 
     var marker = [];
+    var crimeMarker = [];
+
     var circle;
 
     var markersLayer = new L.LayerGroup();
+    var crimeMarkerLayer = new L.LayerGroup();
+
+    function crimeMarker(data){
+      var tempMarker = L.marker([data.lat, data.long], {icon: crimeIcon}).addTo(crimeMarkerLayer);
+      crimeMarkerLayer.addTo(map);
+      crimeMarker.push({marker:tempMarker});
+    }
 
     function makeMarker(data){
       var flag =0
@@ -204,6 +224,11 @@ $( document ).ready(function() {
   var channel = pusher.subscribe('units');
     channel.bind('get-units', function(data) {
       makeMarker(data);
+    });
+
+  var channel = pusher.subscribe('crime');
+    channel.bind('get-crime', function(data) {
+      crimeMarker(data);
     });
 
   const getCrimes = () => {

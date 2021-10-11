@@ -193,7 +193,7 @@ $( document ).ready(function() {
   }
 
   var channel = pusher.subscribe('units');
-    channel.bind('get-events', function(data) {
+    channel.bind('get-units', function(data) {
       makeMarker(data);
     });
 

@@ -198,6 +198,7 @@
                         <th>latitude</th>
                         <th>longitude</th>
                         <th>Status</th>
+                        <th>Operation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -211,6 +212,15 @@
     </html>
 
 <script>
+    var table = $('#table_id').DataTable();
+    table.columns([6,7]).visible(false);  
+    var dataAll = [];
+    var filteredRows;
+    var markersLayer = new L.LayerGroup();
+    var singleDatas = [];
+
+    var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+    $('.datepicker').datepicker();
     
 function showChoice(choice){
     if(choice == "Human"){
@@ -224,6 +234,13 @@ function showChoice(choice){
         $("#fprop").hide();
     }
 }
+    function removeMarker(e){
+        singleDatas.forEach((data)=>{
+            if("marker"+data.id == e.target.id){
+                map.removeLayer(data.marker)
+            }
+        })
+    }
 
 function showSearchChoice(choice){
     if(choice == "0"){
@@ -239,15 +256,8 @@ function showSearchChoice(choice){
 }
 
 $( document ).ready(function() { 
-
-    var table = $('#table_id').DataTable();
-    table.columns([6,7]).visible(false);  
-    var dataAll = [];
-    var filteredRows;
-    var markersLayer = new L.LayerGroup();
-
-    var map = L.map('mapid').setView([10.3157, 123.8854], 14);
-    $('.datepicker').datepicker();
+    
+    
     
 
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -312,9 +322,7 @@ $( document ).ready(function() {
         }else{
             alert("please fill out fields")
         }
-        
-            
-        
+
     })
     
 
@@ -322,6 +330,8 @@ $( document ).ready(function() {
     $("#fprop").hide();
     $("#searchFcase").hide();
     $("#searchPcase").hide();
+
+    
 
     function selectOnlyFiltered(){
         var tempData= {
@@ -349,16 +359,27 @@ $( document ).ready(function() {
         marker= null;
     }
 
+    $(".markerRemove").click(function(){
+        console.log(this.id)
+        //console.log($(this).attr('id'))
+    })
+    
+
     function makeMarker(data,usedLayer){
-        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(data);
+        var html = "<button class='markerRemove' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button>"
+        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
         usedLayer.addTo(map); 
+        singleDatas.push({id:data.id,marker:tempMarker})
     }
 
     
 
     function addTableRow(data){
-         table.row.add([data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status]).draw(false);
-    }
+        var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
+         table.row.add([data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,'Show']).draw(false);
+    } 
+    
+    
 
     
     showCrimes();
@@ -471,8 +492,8 @@ $( document ).ready(function() {
             
         });
     }
-
-    
+        
+     
 });
 
         

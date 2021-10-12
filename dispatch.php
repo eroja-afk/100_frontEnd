@@ -102,12 +102,12 @@
                         <div class="card-header bg-primary text-white">Dispatch</div>
                     <div class="card-body">
                             <div class="mb-3 row">
-                                <label class="form-label">Longitude and Latitude</label>
+                                <label class="form-label">Longitude and Latitude </label>
                                 <div class="col-sm-6">
-                                    <input id="long" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                                    <input id="lat" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
                                 </div>
                                 <div class="col-sm-6">
-                                    <input id="lat" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                                    <input id="long" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -166,6 +166,7 @@
     </html>
 
 <script>
+    var singleDatas = []
 
     function showMarker(iden){
         //console.log(iden.getAttribute("lat"))
@@ -187,19 +188,21 @@
     function makeMarker(data,usedLayer){
         //console.log(data.latitude)
         var flag = 0;
+        console.log(data)
 
         singleDatas.forEach((elem)=>{
-            if(elem.id == data.id){
+            if(elem.id == data.dispatch_id){
+                console.log("naa?")
                 flag = 1; 
                 //break;
             }
         })
 
         if(flag == 0 ){
-            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
+            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.dispatch_id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
             var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
             usedLayer.addTo(map); 
-            singleDatas.push({id:data.id,marker:tempMarker})
+            singleDatas.push({id:data.dispatch_id,marker:tempMarker})
         }
 
         
@@ -213,7 +216,6 @@
     var filteredRows;
     var markersLayer = new L.LayerGroup();
     var tableMarkerLayer = new L.LayerGroup();
-    var singleDatas = [];
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     
@@ -272,8 +274,8 @@ $( document ).ready(function() {
 
                 var changedPos = e.target.getLatLng();
                     geocodeService.reverse().latlng(changedPos).run(function (error, result) {
-                        $("#lo").val(changedPos.lng);
-                        $("#la").val(changedPos.lat);
+                        $("#long").val(changedPos.lng);
+                        $("#lat").val(changedPos.lat);
                         e.target.setPopupContent(result.address.Match_addr).openPopup();
                     })
                 });
@@ -285,22 +287,22 @@ $( document ).ready(function() {
     //     filterCrime();
     // })
 
-    // $("#rmvmarker").click(function(){
-    //     deleteMarker();
-    // })
+    $("#rmvmarker").click(function(){
+        deleteMarker();
+    })
 
     // $("#tableToMap").click(function(){
     //     selectOnlyFiltered();
     // })
 
-    // $("#rmvAllMarkers").click(function(){
-    //     markersLayer.clearLayers();
-    //     tableMarkerLayer.clearLayers();
-    //     $("#lo").val(null);
-    //     $("#la").val(null);
-    //     marker = null;
-    //     singleDatas = []
-    // })
+    $("#rmvAllMarkers").click(function(){
+        markersLayer.clearLayers();
+        tableMarkerLayer.clearLayers();
+        $("#lo").val(null);
+        $("#la").val(null);
+        marker = null;
+        singleDatas = []
+    })
 
     
 
@@ -359,7 +361,7 @@ $( document ).ready(function() {
 
         $.ajax({ 
             method: "GET", 
-            url: "http://localhost:3000/showDispatch",
+            url: "https://recas-api.vercel.app/showDispatch",
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': '*',
@@ -367,16 +369,16 @@ $( document ).ready(function() {
             },
             dataType:"json"
             }).done(function( data ) { 
-                console.log(data);
+                //console.log("==="+data);
                 var tableData = data;
 
-                dataAll = [];
+               
                 table.clear().draw()
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
                     //console.log(tableData.data[i])
                     something = tableData.data[i];
-                    dataAll.push(tableData.data[i]);
-                    // makeMarker(tableData.data[i],markersLayer);
+                   
+                    makeMarker(tableData.data[i],markersLayer);
                     addTableRow(something);
                 }
             });
@@ -389,7 +391,7 @@ $( document ).ready(function() {
 
         $.ajax({ 
             method: "post", 
-            url: "http://localhost:3000/getDispatch",
+            url: "https://recas-api.vercel.app/getDispatch",
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': '*',
@@ -420,7 +422,7 @@ $( document ).ready(function() {
             
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
-            url       : 'http://localhost:3000/addDispatch',
+            url       : 'https://recas-api.vercel.app/addDispatch',
             //url       : 'localhost:3000/reportCrime',
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type',
@@ -450,7 +452,7 @@ $( document ).ready(function() {
 
         $.ajax({ //Process the form using $.ajax()
         method      : 'POST', //Method type
-        url       : 'http://localhost:3000/editDispatch',
+        url       : 'https://recas-api.vercel.app/editDispatch',
         //url       : 'localhost:3000/reportCrime',
         headers: {
             'Access-Control-Allow-Headers': 'Content-Type',

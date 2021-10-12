@@ -65,9 +65,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+            <div class="alert alert-success" role="alert" style="visibility:hidden">
+            </div>
             <div class="mb-3 row">
                 <label class="form-label">Longitude and Latitude</label>
                 <div class="col-sm-6">
+                    <input type="hidden" id="edit_disp_id">
                     <input id="edit_long" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
                 </div>
                 <div class="col-sm-6">
@@ -237,6 +240,49 @@
         //map.setView([data.latitude,data.longitude],14);
     }
 
+    function formatDate(date) {
+     var d = new Date(date),
+         month = '' + (d.getMonth() + 1),
+         day = '' + d.getDate(),
+         year = d.getFullYear();
+
+     if (month.length < 2) month = '0' + month;
+     if (day.length < 2) day = '0' + day;
+
+     return [year, month, day].join('-');
+ }
+
+
+    function getDispatchData(disp_id){
+
+        var element = document.getElementsByClassName('alert');
+        element[0].style.visibility = 'hidden';
+        // var disp_id = $('#edit-modal').attr("data-id");
+        // console.log(disp_id);
+
+        $.ajax({ 
+            method: "post", 
+            url: "http://localhost:3000/getDispatch",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            data: {
+                disp_id : disp_id
+            },
+            dataType:"json"
+            }).done(function( data ) { 
+                // console.log(data.data[0].longitude);
+                document.getElementById('edit_disp_id').value = data.data[0].dispatch_id;
+                document.getElementById('edit_long').value = data.data[0].longitude;
+                document.getElementById('edit_lat').value = data.data[0].latitude;
+                document.getElementById('edit_unit').value = data.data[0].unit_no;
+                document.getElementById('edit_date').value = formatDate(data.data[0].date);
+                document.getElementById('edit_details').value = data.data[0].details;
+            });
+    }
+
 $( document ).ready(function() { 
 
     
@@ -335,7 +381,7 @@ $( document ).ready(function() {
     function addTableRow(data){
         //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
         // console.log(data.date)
-        table.row.add([data.dispatch_id,data.unit_no,formatDate(data.date),data.details,data.longitude,data.latitude,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button><a data-id="+data.dispatch_id+" class='btn btn-primary' data-bs-toggle='modal' id='edit-modal' data-bs-target='#editModal'>Edit</a>"]).draw(false);
+        table.row.add([data.dispatch_id,data.unit_no,formatDate(data.date),data.details,data.longitude,data.latitude,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button><a data-id="+data.dispatch_id+" class='btn btn-primary' data-bs-toggle='modal' id='edit-modal' data-bs-target='#editModal' onclick='getDispatchData("+data.dispatch_id+")'>Edit</a>"]).draw(false);
     } 
 
 
@@ -381,29 +427,6 @@ $( document ).ready(function() {
                 }
             });
     }
-
-    $('#edit-modal').on('click', function(){
-        
-        var disp_id = $('#edit-modal').attr("data-id");
-        console.log(disp_id);
-
-        $.ajax({ 
-            method: "post", 
-            url: "http://localhost:3000/getDispatch",
-            headers: {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Origin': '*'
-            },
-            data: {
-                disp_id : disp_id
-            },
-            dataType:"json"
-            }).done(function( data ) { 
-                console.log(data);
-                
-            });
-    });
 
 
 
@@ -461,6 +484,8 @@ $( document ).ready(function() {
         dataType  : 'json',
         success   : function(data) {
             console.log(data);
+            $('.alert').append('<span>'+data+'</span>');
+            $('.alert').css('visibility', 'visible');
         }
 
         });

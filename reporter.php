@@ -547,6 +547,11 @@ $( document ).ready(function() {
         $.ajax({ 
             method: "GET", 
             url: "https://recas-api.vercel.app/getAllCrimes",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
             dataType:"json"
             }).done(function( data ) { 
                 var tableData = data;
@@ -595,7 +600,12 @@ $( document ).ready(function() {
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
             // url       : 'https://recas-api.vercel.app/reportCrime',
-            url       : 'localhost:3000/reportCrime', //Your form processing file URL
+            url       : 'localhost:3000/reportCrime',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
             data      : postForm, //Forms name
             dataType  : 'json',
             success   : function(data) {
@@ -638,6 +648,11 @@ $( document ).ready(function() {
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
             url       : 'https://recas-api.vercel.app/searchCrime',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
             //url       : 'localhost:3000/reportCrime', //Your form processing file URL
             data      : postForm, //Forms name
             dataType  : 'json',

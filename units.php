@@ -206,7 +206,12 @@ $( document ).ready(function() {
 
       $.ajax({ //Process the form using $.ajax()
                   type      : 'POST', //Method type
-                  url       : 'https://recas-api.vercel.app/getUnitLocation', //Your form processing file URL
+                  url       : 'https://recas-api.vercel.app/getUnitLocation',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
                   data      : {
                     lat: lat,
                     long: long,
@@ -234,7 +239,12 @@ $( document ).ready(function() {
   const getCrimes = () => {
     $.ajax({ //Process the form using $.ajax()
       type      : 'get', //Method type
-      url       : 'https://recas-api.vercel.app/getAllCrimes', //Your form processing file URL
+      url       : 'https://recas-api.vercel.app/getAllCrimes',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
       dataType  : 'json',
       success   : function(resp) {
         // console.log(resp);

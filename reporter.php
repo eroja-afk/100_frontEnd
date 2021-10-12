@@ -426,7 +426,13 @@ function showChoice(choice){
     }
     function goView(data){   
       //weird but cool event
-        map.setView([data.latitude,data.longitude],16);
+      
+      setTimeout(function() {
+        map.setView(L.latLng(map.getCenter()),16)
+
+        }, 700);
+
+        map.setView([data.latitude,data.longitude],14);
         //map.setView([data.latitude,data.longitude],14);
     }
 

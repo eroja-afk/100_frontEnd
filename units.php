@@ -120,13 +120,16 @@
 
     function goView(iden){   
       //weird but cool event
-        map.setView([iden.getAttribute("lat"),iden.getAttribute("lng")],16);
+        setTimeout(function() {
+        map.setView(L.latLng(map.getCenter()),16)
+
+        }, 700);
         map.setView([iden.getAttribute("lat"),iden.getAttribute("lng")],14);
     }
 
     function goViewForMarker(e){   
       //weird but cool event
-        map.setView(e.target.getLatLng(),16);
+      
         map.setView(e.target.getLatLng(),14);
     }
 $( document ).ready(function() {

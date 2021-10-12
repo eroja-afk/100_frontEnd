@@ -160,7 +160,7 @@
                                 <label for="details" class="form-label">Crimes Against</label>
                                 <select class="form-control" id="choice" onclick="showChoice(this.value)">
                                 <option value="null">Select Option</option>
-                                <option value="Human">Against Human</option>
+                                <option value="Human">Against Person</option>
                                 <option value="Property">Against Property</option>
                                 </select>
                             </div>
@@ -195,7 +195,7 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button id="rmvmarker"type="button" class="btn btn-warning">Remove Current Marker</button>
                         <button id="rmvAllMarkers"type="button" class="btn btn-danger">Remove All Markers</button>
-                       <button id="tableToMap"type="button" class="btn btn-primary">Show on map</button>
+                       
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -208,7 +208,7 @@
                                 <label for="searchchoice" class="form-label">Crimes Against</label>
                                 <select class="form-control" id="searchchoice" onclick="showSearchChoice(this.value)">
                                 <option value="">Select Option</option>
-                                <option value="0">Against Human</option>
+                                <option value="0">Against Person</option>
                                 <option value="1">Against Property</option>
                                 </select>
                             </div>
@@ -320,9 +320,11 @@
             </div><br/>
             <div class="container">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white" style="font-size:25px">
                     Crime Data
+                    <button id="tableToMap"type="button" class="btn btn-secondary" style="float:right">Show all on map</button>
                 </div>
+                
                 <div class="card-body">
                 <table id="table_id" class="display">
                 <thead>
@@ -354,12 +356,13 @@
 
 <script>
     var table = $('#table_id').DataTable();
-    table.columns([6,7]).visible(false); 
+    table.columns([7,8]).visible(false); 
     table.columns([0]).visible(false);   
 
     var dataAll = [];
     var filteredRows;
     var markersLayer = new L.LayerGroup();
+    var tableMarkerLayer = new L.LayerGroup();
     var singleDatas = [];
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
@@ -383,6 +386,24 @@ function showChoice(choice){
                 map.removeLayer(data.marker)
             }
         })
+    }
+    function showMarker(iden){
+        //console.log(iden.getAttribute("lat"))
+        var data={
+            id: iden.getAttribute("id"),
+            latitude: iden.getAttribute("lat"),
+            longitude: iden.getAttribute("lng")
+        }
+        
+        makeMarker(data,tableMarkerLayer)
+    }
+
+    function makeMarker(data,usedLayer){
+        //console.log(data.latitude)
+        var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
+        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
+        usedLayer.addTo(map); 
+        singleDatas.push({id:data.id,marker:tempMarker})
     }
 
 function showSearchChoice(choice){
@@ -453,6 +474,7 @@ $( document ).ready(function() {
 
     $("#rmvAllMarkers").click(function(){
         markersLayer.clearLayers();
+        tableMarkerLayer.clearLayers();
         $("#lo").val(null);
         $("#la").val(null);
         marker = null;
@@ -502,26 +524,18 @@ $( document ).ready(function() {
         $("#la").val(null);
         marker= null;
     }
-
-    $(".markerRemove").click(function(){
-        console.log(this.id)
-        //console.log($(this).attr('id'))
-    })
     
 
-    function makeMarker(data,usedLayer){
-        var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
-        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
-        usedLayer.addTo(map); 
-        singleDatas.push({id:data.id,marker:tempMarker})
-    }
+    
 
     
 
     function addTableRow(data){
-        var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
-        table.row.add([data.id,data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' id='marker"+data.id+"' value='Show' onclick='showMarker(event)'>Show</button>"]).draw(false);
+        //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
+        table.row.add([data.id,data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button>"]).draw(false);
     } 
+
+    
     
     
 
@@ -563,8 +577,8 @@ $( document ).ready(function() {
                 ctype = $('#fhuman').val()
             }
 
-            console.log($('#choice').val())
-            console.log(ctype)
+            //console.log($('#choice').val())
+            //console.log(ctype)
 
             var postForm = { //Fetch form data
                 'reporter_name'     : $('#name').val(),
@@ -619,7 +633,7 @@ $( document ).ready(function() {
                 // 'from'     :            $("#searchfrom").val(),
                 // 'to'     :              $("#searchto").val()
             };
-            console.log(postForm)
+            //console.log(postForm)
 
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
@@ -629,7 +643,7 @@ $( document ).ready(function() {
             dataType  : 'json',
             success   : function(data) {
                 for(var i = 0 ; i < Object.keys(data.data).length ; i++){
-                    console.log(data)
+                    //console.log(data)
                     makeMarker(data.data[i],markersLayer);
                 }
             }

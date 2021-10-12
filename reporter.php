@@ -396,14 +396,38 @@ function showChoice(choice){
         }
         
         makeMarker(data,tableMarkerLayer)
+        window.scrollTo(0, 0);
+
+        setTimeout(function() {
+            goView(data);
+
+        }, 1000);
     }
 
     function makeMarker(data,usedLayer){
         //console.log(data.latitude)
-        var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
-        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
-        usedLayer.addTo(map); 
-        singleDatas.push({id:data.id,marker:tempMarker})
+        var flag = 0;
+
+        singleDatas.forEach((elem)=>{
+            if(elem.id == data.id){
+                flag = 1; 
+                //break;
+            }
+        })
+
+        if(flag == 0 ){
+            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
+            var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
+            usedLayer.addTo(map); 
+            singleDatas.push({id:data.id,marker:tempMarker})
+        }
+
+        
+    }
+    function goView(data){   
+      //weird but cool event
+        map.setView([data.latitude,data.longitude],16);
+        //map.setView([data.latitude,data.longitude],14);
     }
 
 function showSearchChoice(choice){
@@ -478,6 +502,7 @@ $( document ).ready(function() {
         $("#lo").val(null);
         $("#la").val(null);
         marker = null;
+        singleDatas = []
     })
 
     $("#submitCrime").click(function(){
@@ -523,6 +548,7 @@ $( document ).ready(function() {
         $("#lo").val(null);
         $("#la").val(null);
         marker= null;
+        
     }
     
 

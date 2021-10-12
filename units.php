@@ -147,7 +147,7 @@ $( document ).ready(function() {
     //     navigator.geolocation.getCurrentPosition(getPosition);
     // }, 3000);
 
-    Pusher.logToConsole = true;
+    //Pusher.logToConsole = true;
 
     var pusher = new Pusher('cb4b3192ce43653d8642', {
       cluster: 'ap1'
@@ -169,6 +169,7 @@ $( document ).ready(function() {
     }
 
     function makeMarker(data){
+      console.log("This is data"+data)
       var flag =0
       for(var i = 0; i < Object.keys(marker).length; i++){
         var found = marker[i].id;
@@ -183,6 +184,8 @@ $( document ).ready(function() {
         var tempMarker = L.marker([data.lat,data.long]).addTo(markersLayer);
         markersLayer.addTo(map);
         marker.push({id: data.id, marker:tempMarker});
+      }else{
+
       }
       
     }
@@ -191,6 +194,7 @@ $( document ).ready(function() {
     function getPosition(position){
     // console.log(position)
     var id = $('#userId').val();
+    
 
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
@@ -251,13 +255,14 @@ $( document ).ready(function() {
 
   var channel = pusher.subscribe('units');
     channel.bind('get-units', function(data) {
+      console.log("This is data"+data)
       makeMarker(data);
     });
 
-  var channel = pusher.subscribe('crime');
-    channel.bind('get-crime', function(data) {
-      crimeMarker(data);
-    });
+  // var channel = pusher.subscribe('crime');
+  //   channel.bind('get-crime', function(data) {
+  //     crimeMarker(data);
+  //   });
 
   const getCrimes = () => {
     $.ajax({ //Process the form using $.ajax()

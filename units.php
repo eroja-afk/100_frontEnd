@@ -75,26 +75,26 @@
           					<a class="nav-link active" aria-current="page" href="#">Unit's View</a>
         				</li>
       				</ul>
-              <a href="logout.php" class="btn btn-danger float-end">Sign Out</a>
+              
+                <a href="logout.php" class="btn btn-danger" >Sign Out</a>
+              
     			</div>
   			</div>
 		</nav>
         <div class="row">
           <div class="col-sm-8">
-            <div id="mapid"></div>
+            <div id="mapid" style="margin:0px;height:90vh"></div>
           </div>
-          <div class="col-sm-4" id="crimeInfo">
-            <div class="card bg-light">
-              <div class="card-header bg-primary">Report Crime Information</div>
-              <div class="card-body" id="info-body">
+          <div class="col-sm-4" id="crimeInfo" style="margin:0px;height:90vh">
+   
+              <div id="info-body">
               <div class="position-relative">
                 <div class="position-absolute top-50 start-50">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div>
                 </div>
-              </div>
-              </div>
+           
             </div>
           </div>
       </div>

@@ -102,12 +102,35 @@
 </html>
 
 <script>
-$( document ).ready(function() {
   var map = L.map('mapid').setView([10.3157, 123.8854], 14);
   var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
     osm.addTo(map);
+    
+    var singleDatas = [];
+    var crimeLayer = new L.LayerGroup();
+
+    function makeCrimeMarker(data,usedLayer){
+        //console.log(data.latitude)
+        var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).on('click', goViewForMarker);
+        usedLayer.addTo(map); 
+        singleDatas.push({id:data.id,marker:tempMarker})
+    }
+
+    function goView(iden){   
+      //weird but cool event
+        map.setView([iden.getAttribute("lat"),iden.getAttribute("lng")],16);
+        map.setView([iden.getAttribute("lat"),iden.getAttribute("lng")],14);
+    }
+
+    function goViewForMarker(e){   
+      //weird but cool event
+        map.setView(e.target.getLatLng(),16);
+        map.setView(e.target.getLatLng(),14);
+    }
+$( document ).ready(function() {
+  
 
     var crimeIcon = L.icon({ //add this new icon
       iconUrl: 'https://icon-library.com/images/gps-pin-icon/gps-pin-icon-3.jpg',
@@ -261,7 +284,9 @@ $( document ).ready(function() {
           dataList += '<li>Details:'+resp.data[i].reporter_details+'</li>';
           dataList += '<li>Status:'+resp.data[i].status+'</li>';
           dataList += '<li>Date:'+resp.data[i].datetime+'</li>';
+          dataList += '<li><button id=marker"'+resp.data[i].id+'" lat="'+resp.data[i].latitude+'" lng="'+resp.data[i].longitude+'" onclick="goView(this)">Go to location</button></li>';
           dataList += '<hr>';
+          makeCrimeMarker(resp.data[i],crimeLayer);
         }
 
         dataContainer.append(dataList);

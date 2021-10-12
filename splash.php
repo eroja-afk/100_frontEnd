@@ -43,6 +43,7 @@
     </body>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
+        
         $( document ).ready(function() {
             var marker;
             var mymap;

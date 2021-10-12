@@ -75,6 +75,7 @@
                         <input id="edit_la" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
                     </div>
                 </div>
+                <input type="hidden" id="hiddenID" value="">
                 <div class="mb-3">
                     <label for="edit_name" class="form-label">Reporters Name</label>
                     <input class="form-control" id="edit_name" type="text" name="name" placeholder="Enter Name">
@@ -95,8 +96,8 @@
                     <label for="edit_choice" class="form-label">Crimes Against</label>
                     <select class="form-control" id="edit_choice" onclick="showChoice(this.value)">
                     <option value="">Select Option</option>
-                    <option value="Human">Against Human</option>
-                    <option value="Property">Against Property</option>
+                    <option value="0">Against Human</option>
+                    <option value="1">Against Property</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -118,9 +119,18 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="edit_contact" class="form-label">Crime Barangay</label>
+                    <select class="form-control" id="edit_status" name="For status">
+                        <option value="">Select Option</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="finished">Finished</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="edit_barangay" class="form-label">Crime Barangay</label>
                     <input class="form-control" id="edit_barangay" type="text" name="contact" placeholder="Enter Barangay">
                 </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -420,7 +430,7 @@ function showChoice(choice){
         })
 
         if(flag == 0 ){
-            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
+            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' id='edit"+data.id+"' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal' onclick='editCrime(this)'>Edit</button>";
             var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
             usedLayer.addTo(map); 
             singleDatas.push({id:data.id,marker:tempMarker})
@@ -440,6 +450,12 @@ function showChoice(choice){
         //map.setView([data.latitude,data.longitude],14);
     }
 
+    
+        $('#edit_button').click(function(){
+            saveEdits();
+        })
+    
+
 function showSearchChoice(choice){
     if(choice == "0"){
         $("#searchFcase").show();
@@ -451,6 +467,93 @@ function showSearchChoice(choice){
         $("#searchFcase").hide();
         $("#searchPcase").hide();
     }
+}
+
+function saveEdits(){
+    var ctype;
+    if($("#edit_fhuman").val() == ''){
+        ctype =  $("#edit_fprop").val();
+    }else{
+        ctype = $("#edit_fhuman").val()
+    }
+    console.log("dadadad"+$("#edit_status").val())
+           
+    var postForm={
+        id: $("#hiddenID").val(),
+        report_details:$("#edit_details").val(),
+        crimeType_id:ctype,
+        reporter_name:$("#edit_name").val(),
+        reporter_contact:$("#edit_contact").val(),
+        reporter_address:$("#edit_address").val(),
+        status:$("#edit_status").val(),
+        barangay:$("#edit_barangay").val()
+    }
+
+    $.ajax({ //Process the form using $.ajax()
+            method      : 'POST', //Method type
+            // url       : 'https://recas-api.vercel.app/reportCrime',
+            url       : 'https://recas-api.vercel.app/editCrime',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            data      : postForm, //Forms name
+            dataType  : 'json',
+            success   : function(data) {
+                alert("Crime updated")
+            }
+            
+        });
+            
+}
+
+function editCrime(e){
+
+    var postForm = {
+        id : e.getAttribute("id").replace('edit','')
+    }
+    //console.log(postForm.id)
+    $.ajax({ 
+            method: "POST", 
+            url: "https://recas-api.vercel.app/getOneCrime",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            data : postForm,
+            dataType:"json"
+            }).done(function( data ) { 
+                var ctype ="";
+
+                if($("#edit_choice").val() == '0' ){
+                    $("#edit_fhuman").val(data.data[0].crimeType_id);
+                    //$("#edit_fhuman").attr("placeholder", data.data[0].type)
+                }else{
+                    $("#edit_fprop").val(data.data[0].crimeType_id);
+                    //$("#edit_fprop").attr("placeholder", data.data[0].type)
+                }
+
+                $("#edit_name").val(data.data[0].reporter_name);
+                $("#edit_contact").val(data.data[0].reporter_contact);
+                $("#edit_address").val(data.data[0].reporter_address);
+                $("#edit_details").val(data.data[0].report_details);
+                $("#edit_choice").val(data.data[0].against);
+                $("#edit_status").val(data.data[0].status);
+                
+                $("#edit_barangay").val(data.data[0].barangay);
+                
+                $("#hiddenID").val(data.data[0].id)
+                $("#edit_name").attr("placeholder", data.data[0].reporter_name)
+                $("#edit_contact").attr("placeholder", data.data[0].reporter_contact)
+                $("#edit_address").attr("placeholder", data.data[0].reporter_address)
+                $("#edit_details").attr("placeholder", data.data[0].report_details)
+                $("#edit_choice").attr("placeholder", data.data[0].against)
+                
+                $("#edit_barangay").attr("placeholder", data.data[0].barangay)
+
+            });
 }
 
 $( document ).ready(function() { 
@@ -607,13 +710,12 @@ $( document ).ready(function() {
             dataType:"json"
             }).done(function( data ) { 
                 var tableData = data;
-
-                dataAll = [];
+                console.log(data)
                 table.clear().draw()
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
                     //console.log(tableData.data[i])
                     something = tableData.data[i];
-                    dataAll.push(tableData.data[i]);
+                    //console.log(tableData.data[i])
                     makeMarker(tableData.data[i],markersLayer);
                     addTableRow(something);
                 }

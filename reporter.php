@@ -3,6 +3,7 @@
         <script src="./resources/jquery-3.6.0.min.js"></script>
     	<link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="bootstrap-5.1.2-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     	<script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.js"></script>
         <script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.min.js"></script>
         <script src="./resources/leaflet/leaflet.js"></script>
@@ -47,8 +48,11 @@
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="#">Home</a>
         				</li>
+                        <li class="nav-item">
+                            <a href="logout.php" class="btn btn-danger">Sign Out</a>
+                        </li>
       				</ul>
-                    <a href="logout.php" class="btn btn-danger">Sign Out</a>
+
     			</div>
   			</div>
 		</nav><br>
@@ -193,8 +197,8 @@
                 <div class="col-sm-6">
                     <div id="mapid"></div>
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <button id="rmvmarker"type="button" class="btn btn-warning">Remove Current Marker</button>
-                        <button id="rmvAllMarkers"type="button" class="btn btn-danger">Remove All Markers</button>
+                        <button id="rmvmarker"type="button" class="btn btn-warning" style="margin:10px;"><i class="fa fa-close"></i> Current Marker</button>
+                        <button id="rmvAllMarkers"type="button" class="btn btn-danger"><i class="fa fa-close"></i> All Markers</button>
                        
                     </div>
                 </div>

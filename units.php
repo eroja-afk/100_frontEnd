@@ -140,15 +140,15 @@ $( document ).ready(function() {
       shadowUrl: 'resources/leaflet/images/marker-shadow.png',
       iconSize:     [55, 50], // size of the icon
       shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
       shadowAnchor: [4, 62],  // the same for the shadow
       popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
         
-    // setInterval(() =>{
-    //     navigator.geolocation.getCurrentPosition(getPosition);
-    // }, 3000);
+     setInterval(() =>{
+         navigator.geolocation.getCurrentPosition(getPosition);
+     }, 3000);
 
     //Pusher.logToConsole = true;
 
@@ -218,6 +218,7 @@ $( document ).ready(function() {
       markersLayer.addTo(map);
       marker.push({id: id, marker:tempMarker});
     }
+    L.marker([lat, long], {icon: crimeIcon}).addTo(map);
     
 
     // marker = L.marker([lat, long])
@@ -234,25 +235,25 @@ $( document ).ready(function() {
 
     // map.fitBounds(featureGroup.getBounds())
 
-      $.ajax({ //Process the form using $.ajax()
-                  type      : 'POST', //Method type
-                  url       : 'https://recas-api.vercel.app/getUnitLocation',
-            headers: {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Origin': '*'
-            },
-                  data      : {
-                    lat: lat,
-                    long: long,
-                    accuracy: accuracy,
-                    userId : id
-                  }, //Forms name
-                  dataType  : 'json',
-                  success   : function(data) {
-                      console.log(data);
-                  }
-              });
+      // $.ajax({ //Process the form using $.ajax()
+      //             type      : 'POST', //Method type
+      //             url       : 'https://recas-api.vercel.app/getUnitLocation',
+      //       headers: {
+      //           'Access-Control-Allow-Headers': 'Content-Type',
+      //           'Access-Control-Allow-Methods': '*',
+      //           'Access-Control-Allow-Origin': '*'
+      //       },
+      //             data      : {
+      //               lat: lat,
+      //               long: long,
+      //               accuracy: accuracy,
+      //               userId : id
+      //             }, //Forms name
+      //             dataType  : 'json',
+      //             success   : function(data) {
+      //                 console.log(data);
+      //             }
+      //         });
 
   }
 
@@ -292,7 +293,7 @@ $( document ).ready(function() {
           dataList += '<li>Details:'+resp.data[i].reporter_details+'</li>';
           dataList += '<li>Status:'+resp.data[i].status+'</li>';
           dataList += '<li>Date:'+resp.data[i].datetime+'</li>';
-          dataList += '<li><button id=marker"'+resp.data[i].id+'" lat="'+resp.data[i].latitude+'" lng="'+resp.data[i].longitude+'" onclick="goView(this)">Go to location</button></li>';
+          dataList += '<li><button id=marker"'+resp.data[i].id+'" lat="'+resp.data[i].latitude+'" lng="'+resp.data[i].longitude+'" onclick="goView(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button></li>';
           dataList += '<hr>';
           makeCrimeMarker(resp.data[i],crimeLayer);
         }

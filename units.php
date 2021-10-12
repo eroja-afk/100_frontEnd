@@ -146,11 +146,11 @@ $( document ).ready(function() {
     });
 
         
-     setInterval(() =>{
-         navigator.geolocation.getCurrentPosition(getPosition);
-     }, 3000);
+    //  setInterval(() =>{
+    //      navigator.geolocation.getCurrentPosition(getPosition);
+    //  }, 3000);
 
-    //Pusher.logToConsole = true;
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('cb4b3192ce43653d8642', {
       cluster: 'ap1'

@@ -163,14 +163,14 @@
                             <div class="mb-3">
                                 <label for="details" class="form-label">Crimes Against</label>
                                 <select class="form-control" id="choice" onclick="showChoice(this.value)">
-                                <option value="null">Select Option</option>
+                                <option value="">Select Option</option>
                                 <option value="Human">Against Person</option>
                                 <option value="Property">Against Property</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <select class="form-control" id="fhuman" name="For Human">
-                                    <option value="null">Select Option</option>
+                                    <option value="">Select Option</option>
                                     <option value="1">Murder</option>
                                     <option value="2">Homicide</option>
                                     <option value="3">Physical Injuries</option>
@@ -180,7 +180,7 @@
 
                             <div class="mb-3">
                                 <select class="form-control" id="fprop" name="For Property">
-                                    <option value="null">Select Option</option>
+                                    <option value="">Select Option</option>
                                     <option value="5">Robbery</option>
                                     <option value="6">Theft</option>
                                     <option value="7">Carnapping</option>
@@ -571,7 +571,7 @@ $( document ).ready(function() {
 
     function addTableRow(data){
         //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
-        console.log(data.date)
+        //console.log(data.date)
         table.row.add([data.id,data.against,data.type,formatDate(data.date),data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button>"]).draw(false);
     } 
     
@@ -652,7 +652,7 @@ $( document ).ready(function() {
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type
             // url       : 'https://recas-api.vercel.app/reportCrime',
-            url       : 'localhost:3000/reportCrime',
+            url       : 'https://recas-api.vercel.app/reportCrime',
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': '*',

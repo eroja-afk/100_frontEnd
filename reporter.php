@@ -236,10 +236,10 @@
                             <label for="searchbarangay" class="form-label">Barangay</label>
                             <select class="form-control" id="searchbarangay">
                                 <option value="">Select Option</option>
-                                <option value="1">brgy1</option>
-                                <option value="2">brgy2</option>
-                                <option value="3">brgy3</option>
-                                <option value="4">brgy4</option>
+                                <option value="brgy1">brgy1</option>
+                                <option value="brgy2">brgy2</option>
+                                <option value="brgy3">brgy3</option>
+                                <option value="brgy4">brgy4</option>
                             </select> 
                             <div class="mb-3">
                                 <label for="searchcontact" class="form-label">Reporter Contact</label>
@@ -597,7 +597,7 @@ $( document ).ready(function() {
         //console.log(contact)
 
         var ctype;
-            if($('#searchFcase').val() == 'null'){
+            if($('#searchFcase').val() == ''){
                 ctype = $('#searchPcase').val()
             }else{
                 ctype = $('#searchFcase').val()

@@ -48,11 +48,11 @@
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="#">Home</a>
         				</li>
-                        <li class="nav-item">
-                            <a href="logout.php" class="btn btn-danger">Sign Out</a>
-                        </li>
+                        
+                        
       				</ul>
-
+                    
+                            <a href="logout.php" id="signO" class="btn btn-danger">Sign Out</a>
     			</div>
   			</div>
 		</nav><br>

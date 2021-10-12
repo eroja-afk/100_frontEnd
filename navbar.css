@@ -26,5 +26,6 @@ select{
 }
 
 #signO {
+    float: right;
     margin-left: 85%;
 }

@@ -316,8 +316,6 @@
 
         var element = document.getElementsByClassName('alert');
         element[0].style.visibility = 'hidden';
-        // var disp_id = $('#edit-modal').attr("data-id");
-        // console.log(disp_id);
 
         $.ajax({ 
             method: "post", 

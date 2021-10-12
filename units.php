@@ -103,12 +103,12 @@
 <script>
 
   var crimeIcon = L.icon({ //add this new icon
-      iconUrl: 'https://icon-library.com/images/gps-pin-icon/gps-pin-icon-3.jpg',
-      shadowUrl: 'resources/leaflet/images/marker-shadow.png',
-      iconSize:     [55, 50], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
+      iconUrl: 'placeholder.png',
+      //shadowUrl: 'resources/leaflet/images/marker-shadow.png',
+      iconSize:     [20, 30], // size of the icon
+      //shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
+      // shadowAnchor: [4, 62],  // the same for the shadow
       popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
@@ -286,15 +286,17 @@ $( document ).ready(function() {
         var dataList = '';
 
         for(var i = 0; i < Object.keys(resp.data).length; i++){
-          dataList += '<li>Reporter Name:'+resp.data[i].reporter_name+'</li>';
-          dataList += '<li>Address:'+resp.data[i].reporter_address+'</li>';
-          dataList += '<li>Latitude:'+resp.data[i].latitude+'</li>';
-          dataList += '<li>Longitude:'+resp.data[i].longitude+'</li>';
-          dataList += '<li>Contact:'+resp.data[i].reporter_contact+'</li>';
-          dataList += '<li>Details:'+resp.data[i].reporter_details+'</li>';
-          dataList += '<li>Status:'+resp.data[i].status+'</li>';
-          dataList += '<li>Date:'+resp.data[i].datetime+'</li>';
-          dataList += '<li><button class="btn btn-primary" id=marker"'+resp.data[i].id+'" lat="'+resp.data[i].latitude+'" lng="'+resp.data[i].longitude+'" onclick="goView(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button></li>';
+          	dataList += '<div class="row">';
+         	dataList += '<div class="col-sm">';
+          	dataList += '<li>Reporter Name:'+resp.data[i].reporter_name+'</li>';
+          	dataList += '<li>Address:'+resp.data[i].reporter_address+'</li>';
+          	dataList += '<li>Contact:'+resp.data[i].reporter_contact+'</li>';
+     		dataList += '<li>Details:'+resp.data[i].reporter_details+'</li>';
+          	dataList += '</div><div class="col-sm">';
+          	dataList += '<li id="toLeft">Status:'+resp.data[i].status+'</li>';
+          	dataList += '<li>Date:'+resp.data[i].datetime+'</li>';
+          	dataList += '</div></div>';
+          	dataList += '<li><button class="btn btn-primary" id=marker"'+resp.data[i].id+'" lat="'+resp.data[i].latitude+'" lng="'+resp.data[i].longitude+'" onclick="goView(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button></li>';
           dataList += '<hr>';
           makeCrimeMarker(resp.data[i],crimeLayer);
         }

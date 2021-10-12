@@ -54,6 +54,46 @@
     			</div>
   			</div>
 		</nav><br>
+        
+
+        <!-- Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Dispatch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="mb-3 row">
+                <label class="form-label">Longitude and Latitude</label>
+                <div class="col-sm-6">
+                    <input id="edit_long" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                </div>
+                <div class="col-sm-6">
+                    <input id="edit_lat" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="edit_unit" class="form-label">Unit No</label>
+                <input class="form-control" id="edit_unit" type="text" name="unit" placeholder="Enter Unit No">
+            </div>
+            <div class="mb-3">
+                <label for="edit_date" class="form-label">Date</label>
+                <input class="form-control" id="edit_date" type="date" name="date"></input>
+            </div>
+            <div class="mb-3">
+                <label for="edit_details" class="form-label">Details</label>
+                <textarea class="form-control" id="edit_details" type="text" name="details" placeholder="Enter Details"></textarea>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="edit_dispatch">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
 
         <div class = "container">
             <div class="row">
@@ -64,10 +104,10 @@
                             <div class="mb-3 row">
                                 <label class="form-label">Longitude and Latitude</label>
                                 <div class="col-sm-6">
-                                    <input id="lo" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                                    <input id="long" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
                                 </div>
                                 <div class="col-sm-6">
-                                    <input id="la" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                                    <input id="lat" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -82,7 +122,7 @@
                                 <label for="details" class="form-label">Details</label>
                                 <textarea class="form-control" id="details" class="details" type="text" name="details" placeholder="Enter Details"></textarea>
                             </div>
-                            <button class="btn btn-success form-control" id="submitCrime">Submit</button>
+                            <button class="btn btn-success form-control" id="submit_dispatch">Submit</button>
                     </div>
                 </div>
             </div>
@@ -110,11 +150,13 @@
                         <th>Unit #</th>
                         <th>Date</th>
                         <th>Details</th>
+                        <th>Longitude</th>
+                        <th>Latitude</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-                    </tbody>
+                <tbody> 
+                </tbody>
                 </table>
                 </div>
             </div>
@@ -124,367 +166,307 @@
     </html>
 
 <script>
+
+    function showMarker(iden){
+        //console.log(iden.getAttribute("lat"))
+        var data={
+            id: iden.getAttribute("id"),
+            latitude: iden.getAttribute("lat"),
+            longitude: iden.getAttribute("lng")
+        }
+        
+        makeMarker(data,tableMarkerLayer)
+        window.scrollTo(0, 80);
+
+        setTimeout(function() {
+            goView(data);
+
+        }, 1000);
+    }
+
+    function makeMarker(data,usedLayer){
+        //console.log(data.latitude)
+        var flag = 0;
+
+        singleDatas.forEach((elem)=>{
+            if(elem.id == data.id){
+                flag = 1; 
+                //break;
+            }
+        })
+
+        if(flag == 0 ){
+            var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
+            var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
+            usedLayer.addTo(map); 
+            singleDatas.push({id:data.id,marker:tempMarker})
+        }
+
+        
+    }
+
     var table = $('#table_id').DataTable();
-    table.columns([7,8]).visible(false); 
-    table.columns([0]).visible(false);   
+    // table.columns([7,8]).visible(false); 
+    // table.columns([0]).visible(false);   
 
-//     var dataAll = [];
-//     var filteredRows;
-//     var markersLayer = new L.LayerGroup();
-//     var tableMarkerLayer = new L.LayerGroup();
-//     var singleDatas = [];
+    var dataAll = [];
+    var filteredRows;
+    var markersLayer = new L.LayerGroup();
+    var tableMarkerLayer = new L.LayerGroup();
+    var singleDatas = [];
 
-//     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
-//     $('.datepicker').datepicker();
+    var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     
-// function showChoice(choice){
-//     if(choice == "Human"){
-//         $("#fhuman").show();
-//         $("#fprop").hide();
-//     }else if(choice == "Property"){
-//         $("#fprop").show();
-//         $("#fhuman").hide();
-//     }else{
-//         $("#fhuman").hide();
-//         $("#fprop").hide();
-//     }
-// }
-//     function removeMarker(e){
-//         singleDatas.forEach((data)=>{
-//             if("marker"+data.id == e.target.id){
-//                 map.removeLayer(data.marker)
-//             }
-//         })
-//     }
-//     function showMarker(iden){
-//         //console.log(iden.getAttribute("lat"))
-//         var data={
-//             id: iden.getAttribute("id"),
-//             latitude: iden.getAttribute("lat"),
-//             longitude: iden.getAttribute("lng")
-//         }
-        
-//         makeMarker(data,tableMarkerLayer)
-//         window.scrollTo(0, 80);
-
-//         setTimeout(function() {
-//             goView(data);
-
-//         }, 1000);
-//     }
-
-//     function makeMarker(data,usedLayer){
-//         //console.log(data.latitude)
-//         var flag = 0;
-
-//         singleDatas.forEach((elem)=>{
-//             if(elem.id == data.id){
-//                 flag = 1; 
-//                 //break;
-//             }
-//         })
-
-//         if(flag == 0 ){
-//             var html = "<button class='markerRemove btn btn-danger' id='marker"+data.id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
-//             var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
-//             usedLayer.addTo(map); 
-//             singleDatas.push({id:data.id,marker:tempMarker})
-//         }
-
-        
-//     }
-//     function goView(data){   
-//       //weird but cool event
+    function removeMarker(e){
+        singleDatas.forEach((data)=>{
+            if("marker"+data.id == e.target.id){
+                map.removeLayer(data.marker)
+            }
+        })
+    }
+    
+    function goView(data){   
+      //weird but cool event
       
-//       setTimeout(function() {
-//         map.setView(L.latLng(map.getCenter()),16)
+      setTimeout(function() {
+        map.setView(L.latLng(map.getCenter()),16)
 
-//         }, 700);
+        }, 700);
 
-//         map.setView([data.latitude,data.longitude],14);
-//         //map.setView([data.latitude,data.longitude],14);
-//     }
+        map.setView([data.latitude,data.longitude],14);
+        //map.setView([data.latitude,data.longitude],14);
+    }
 
-// function showSearchChoice(choice){
-//     if(choice == "0"){
-//         $("#searchFcase").show();
-//         $("#searchPcase").hide();
-//     }else if(choice == "1"){
-//         $("#searchPcase").show();
-//         $("#searchFcase").hide();
-//     }else{
-//         $("#searchFcase").hide();
-//         $("#searchPcase").hide();
-//     }
-// }
+$( document ).ready(function() { 
 
-// $( document ).ready(function() { 
-    
     
     
 
-//     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//         });
-//     osm.addTo(map);
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+    osm.addTo(map);
         
-//     var geocodeService = L.esri.Geocoding.geocodeService();
-//     var longitude;
-//     var latitude;
-//     var marker = null;
+    var geocodeService = L.esri.Geocoding.geocodeService();
+    var longitude;
+    var latitude;
+    var marker = null;
 
 
-//     map.on('click', function (e) {
-//         if(marker == null){
-//             geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-//                 if (error) {
-//                     return;
-//                 }
-//                 $("#lo").val(result.latlng.lng);
-//                 $("#la").val(result.latlng.lat);
+    map.on('click', function (e) {
+        if(marker == null){
+            geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                if (error) {
+                    return;
+                }
+                $("#long").val(result.latlng.lng);
+                $("#lat").val(result.latlng.lat);
 
-//                 alert(result.latlng)
-//                 marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+                alert(result.latlng)
+                marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
 
-//                 markersLayer.addTo(map); 
+                markersLayer.addTo(map); 
 
-//                 marker.on("dragend",function(e){
+                marker.on("dragend",function(e){
                 
 
-//                 var changedPos = e.target.getLatLng();
-//                     geocodeService.reverse().latlng(changedPos).run(function (error, result) {
-//                         $("#lo").val(changedPos.lng);
-//                         $("#la").val(changedPos.lat);
-//                         e.target.setPopupContent(result.address.Match_addr).openPopup();
-//                     })
-//                 });
-//             });
-//         }
-//     });
+                var changedPos = e.target.getLatLng();
+                    geocodeService.reverse().latlng(changedPos).run(function (error, result) {
+                        $("#lo").val(changedPos.lng);
+                        $("#la").val(changedPos.lat);
+                        e.target.setPopupContent(result.address.Match_addr).openPopup();
+                    })
+                });
+            });
+        }
+    });
 
-//     $("#filterbtn").click(function(){
-//         filterCrime();
-//     })
+    // $("#filterbtn").click(function(){
+    //     filterCrime();
+    // })
 
-//     $("#rmvmarker").click(function(){
-//         deleteMarker();
-//     })
+    // $("#rmvmarker").click(function(){
+    //     deleteMarker();
+    // })
 
-//     $("#tableToMap").click(function(){
-//         selectOnlyFiltered();
-//     })
+    // $("#tableToMap").click(function(){
+    //     selectOnlyFiltered();
+    // })
 
-//     $("#rmvAllMarkers").click(function(){
-//         markersLayer.clearLayers();
-//         tableMarkerLayer.clearLayers();
-//         $("#lo").val(null);
-//         $("#la").val(null);
-//         marker = null;
-//         singleDatas = []
-//     })
-
-//     $("#submitCrime").click(function(){
-
-//         if($('#name').val() != "" || $('#contact').val() != "" || $('#address').val() != "" || $('#details').val() != "" || $('#fhuman').val() != "" || $('#fprop').val() != ""){
-//             reportCrime();
-//         }else{
-//             alert("please fill out fields")
-//         }
-
-//     })
-    
-
-//     $("#fhuman").hide();
-//     $("#fprop").hide();
-//     $("#searchFcase").hide();
-//     $("#searchPcase").hide();
+    // $("#rmvAllMarkers").click(function(){
+    //     markersLayer.clearLayers();
+    //     tableMarkerLayer.clearLayers();
+    //     $("#lo").val(null);
+    //     $("#la").val(null);
+    //     marker = null;
+    //     singleDatas = []
+    // })
 
     
 
-//     function selectOnlyFiltered(){
-//         var tempData= {
-//             id: 1000,
-//             latitude:  0,
-//             longitude:  0
-//         }
+    function selectOnlyFiltered(){
+        var tempData= {
+            id: 1000,
+            latitude:  0,
+            longitude:  0
+        }
 
-//         filteredRows = table.rows({filter: 'applied'});
-//         //console.log(filteredRows.data()[0])
-//         for(var i = 0 ; i < filteredRows.data().length ; i ++){
-//             // console.log(filteredRows.data()[i][6])
-//             // console.log(filteredRows.data()[i][7])
-//             tempData.id = filteredRows.data()[i][0];
-//             tempData.latitude = filteredRows.data()[i][7];
-//             tempData.longitude = filteredRows.data()[i][8];
-//             makeMarker(tempData,markersLayer)
-//         }
+        filteredRows = table.rows({filter: 'applied'});
+        //console.log(filteredRows.data()[0])
+        for(var i = 0 ; i < filteredRows.data().length ; i ++){
+            // console.log(filteredRows.data()[i][6])
+            // console.log(filteredRows.data()[i][7])
+            tempData.id = filteredRows.data()[i][0];
+            tempData.latitude = filteredRows.data()[i][7];
+            tempData.longitude = filteredRows.data()[i][8];
+            makeMarker(tempData,markersLayer)
+        }
         
-//     }
+    }
 
-//     function deleteMarker(){
-//         map.removeLayer(marker);
-//         $("#lo").val(null);
-//         $("#la").val(null);
-//         marker= null;
+    function deleteMarker(){
+        map.removeLayer(marker);
+        $("#lo").val(null);
+        $("#la").val(null);
+        marker= null;
         
-//     }
-    
+    }
+
+    function addTableRow(data){
+        //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
+        // console.log(data.date)
+        table.row.add([data.dispatch_id,data.unit_no,formatDate(data.date),data.details,data.longitude,data.latitude,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button><a data-id="+data.dispatch_id+" class='btn btn-primary' data-bs-toggle='modal' id='edit-modal' data-bs-target='#editModal'>Edit</a>"]).draw(false);
+    } 
+
+
+    function formatDate(date) {
+     var d = new Date(date),
+         month = '' + (d.getMonth() + 1),
+         day = '' + d.getDate(),
+         year = d.getFullYear();
+
+     if (month.length < 2) month = '0' + month;
+     if (day.length < 2) day = '0' + day;
+
+     return [year, month, day].join('-');
+ }
 
     
-
+    showDispatchData();
     
+    function showDispatchData(){
+        var something; 
 
-//     function addTableRow(data){
-//         //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
-//         console.log(data.date)
-//         table.row.add([data.id,data.against,data.type,formatDate(data.date),data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button>"]).draw(false);
-//     } 
-    
-//     function formatDate(date) {
-//      var d = new Date(date),
-//          month = '' + (d.getMonth() + 1),
-//          day = '' + d.getDate(),
-//          year = d.getFullYear();
+        $.ajax({ 
+            method: "GET", 
+            url: "http://localhost:3000/showDispatch",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            dataType:"json"
+            }).done(function( data ) { 
+                console.log(data);
+                var tableData = data;
 
-//      if (month.length < 2) month = '0' + month;
-//      if (day.length < 2) day = '0' + day;
+                dataAll = [];
+                table.clear().draw()
+                for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
+                    //console.log(tableData.data[i])
+                    something = tableData.data[i];
+                    dataAll.push(tableData.data[i]);
+                    // makeMarker(tableData.data[i],markersLayer);
+                    addTableRow(something);
+                }
+            });
+    }
 
-//      return [year, month, day].join('-');
-//  }
+    $('#edit-modal').on('click', function(){
+        
+        var disp_id = $('#edit-modal').attr("data-id");
+        console.log(disp_id);
 
-    
-    
-    
-
-    
-//     showCrimes();
-    
-//     function showCrimes(){
-//         var something;
-//         $.ajax({ 
-//             method: "GET", 
-//             url: "https://recas-api.vercel.app/getAllCrimes",
-//             headers: {
-//                 'Access-Control-Allow-Headers': 'Content-Type',
-//                 'Access-Control-Allow-Methods': '*',
-//                 'Access-Control-Allow-Origin': '*'
-//             },
-//             dataType:"json"
-//             }).done(function( data ) { 
-//                 var tableData = data;
-
-//                 dataAll = [];
-//                 table.clear().draw()
-//                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
-//                     //console.log(tableData.data[i])
-//                     something = tableData.data[i];
-//                     dataAll.push(tableData.data[i]);
-//                     makeMarker(tableData.data[i],markersLayer);
-//                     addTableRow(something);
-//                 }
-//                 //console.log(markerData)
-//             });
-
-
-//     }
-
-
-
-//     function reportCrime(){
-
-//             var ctype;
-//             if($('#fhuman').val() == 'null'){
-//                 ctype = $('#fprop').val()
-//             }else{
-//                 ctype = $('#fhuman').val()
-//             }
-
-//             //console.log($('#choice').val())
-//             //console.log(ctype)
-
-//             var postForm = { //Fetch form data
-//                 'reporter_name'     : $('#name').val(),
-//                 'reporter_contact'     : $('#contact').val(),
-//                 'reporter_address'     : $('#address').val(),
-//                 'report_details'     : $('#details').val(),
-//                 'latitude'     : $('#la').val(),
-//                 'longitude'     : $('#lo').val(),
-//                 'crimeType_id'     :ctype,
-//                 'barangay' :        $("#barangay").val()
-//             };
-
-            
-//         $.ajax({ //Process the form using $.ajax()
-//             method      : 'POST', //Method type
-//             url       : 'https://recas-api.vercel.app/reportCrime',
-//             //url       : 'localhost:3000/reportCrime',
-//             headers: {
-//                 'Access-Control-Allow-Headers': 'Content-Type',
-//                 'Access-Control-Allow-Methods': '*',
-//                 'Access-Control-Allow-Origin': '*'
-//             },
-//             data      : postForm, //Forms name
-//             dataType  : 'json',
-//             success   : function(data) {
-//                 alert("Crime reported")
+        $.ajax({ 
+            method: "post", 
+            url: "http://localhost:3000/getDispatch",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            data: {
+                disp_id : disp_id
+            },
+            dataType:"json"
+            }).done(function( data ) { 
+                console.log(data);
                 
-//             }
+            });
+    });
+
+
+
+    $('#submit_dispatch').on('click', function(){
+
+            var postForm = { //Fetch form data
+                'latitude'     : $('#lat').val(),
+                'longitude' : $('#long').val(),
+                'unit_no': $('#unit').val(),
+                'date' : $('#date').val(),
+                'details': $('#details').val()
+            };
+
             
-//         });
-//     }
-
-//     function filterCrime(){
-//         var contact ='null';
-//         //console.log(contact)
-
-//         var ctype;
-//             if($('#searchFcase').val() == ''){
-//                 ctype = $('#searchPcase').val()
-//             }else{
-//                 ctype = $('#searchFcase').val()
-//             }
-
-//         var postForm = { //Fetch form data
-//                 'choice'     :          $("#searchchoice").val(),
-//                 'crimecase'     :       ctype,
-//                 'status'     :          $("#searchstatus").val(),
-//                 'searchbarangay'     :  $("#searchbarangay").val(),
-//                 'contact'     :         $("#searchcontact").val(),
-//                 'from'     :            $("#searchfrom").val(),
-//                 'to'     :              $("#searchto").val()
-//                 // 'choice'     :          $("#searchchoice").val(),
-//                 // 'crimecase'     :       null,
-//                 // 'status'     :          null,
-//                 // 'searchbarangay'     :  null,
-//                 // 'contact'     :         null,
-//                 // 'from'     :            $("#searchfrom").val(),
-//                 // 'to'     :              $("#searchto").val()
-//             };
-//             //console.log(postForm)
-
-//         $.ajax({ //Process the form using $.ajax()
-//             method      : 'POST', //Method type
-//             url       : 'https://recas-api.vercel.app/searchCrime',
-//             headers: {
-//                 'Access-Control-Allow-Headers': 'Content-Type',
-//                 'Access-Control-Allow-Methods': '*',
-//                 'Access-Control-Allow-Origin': '*'
-//             },
-//             //url       : 'localhost:3000/reportCrime', //Your form processing file URL
-//             data      : postForm, //Forms name
-//             dataType  : 'json',
-//             success   : function(data) {
-//                 for(var i = 0 ; i < Object.keys(data.data).length ; i++){
-//                     //console.log(data)
-//                     makeMarker(data.data[i],markersLayer);
-//                 }
-//             }
+        $.ajax({ //Process the form using $.ajax()
+            method      : 'POST', //Method type
+            url       : 'http://localhost:3000/addDispatch',
+            //url       : 'localhost:3000/reportCrime',
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            data      : postForm, //Forms name
+            dataType  : 'json',
+            success   : function(data) {
+                console.log(data);
+            }
             
-//         });
-//     }
-        
+        });
+    }); 
+
+    $('#edit_dispatch').on('click', function(){
+
+        var postForm = { //Fetch form data
+            'disp_id': $('#edit_disp_id').val(),
+            'latitude'     : $('#edit_lat').val(),
+            'longitude' : $('#edit_long').val(),
+            'unit_no': $('#edit_unit').val(),
+            'date' : $('#edit_date').val(),
+            'details': $('#edit_details').val()
+        };
+
+
+        $.ajax({ //Process the form using $.ajax()
+        method      : 'POST', //Method type
+        url       : 'http://localhost:3000/editDispatch',
+        //url       : 'localhost:3000/reportCrime',
+        headers: {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Origin': '*'
+        },
+        data      : postForm, //Forms name
+        dataType  : 'json',
+        success   : function(data) {
+            console.log(data);
+        }
+
+        });
+    }); 
      
-// });
+});
 
         
 </script>

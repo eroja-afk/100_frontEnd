@@ -83,9 +83,9 @@
 		</nav>
         <div class="row">
           <div class="col-sm-8">
-            <div id="mapid" style="margin:0px;height:90vh"></div>
+            <div id="mapid" style="margin:0px;height:88vh"></div>
           </div>
-          <div class="col-sm-4" id="crimeInfo" style="margin:0px;height:90vh">
+          <div class="col-sm-4" id="crimeInfo" style="margin:0px;height:88vh">
    
               <div id="info-body">
               <div class="position-relative">
@@ -130,7 +130,7 @@
     function goViewForMarker(e){   
       //weird but cool event
       
-        map.setView(e.target.getLatLng(),14);
+        map.setView(e.target.getLatLng(),16);
     }
 $( document ).ready(function() {
   

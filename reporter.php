@@ -396,7 +396,7 @@ function showChoice(choice){
         }
         
         makeMarker(data,tableMarkerLayer)
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 80);
 
         setTimeout(function() {
             goView(data);
@@ -468,24 +468,27 @@ $( document ).ready(function() {
     map.on('click', function (e) {
         if(marker == null){
             geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-            if (error) {
-                return;
-            }
-            $("#lo").val(result.latlng.lng);
-            $("#la").val(result.latlng.lat);
+                if (error) {
+                    return;
+                }
+                $("#lo").val(result.latlng.lng);
+                $("#la").val(result.latlng.lat);
 
-            alert(result.latlng)
-            marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+                alert(result.latlng)
+                marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
 
-            markersLayer.addTo(map); 
+                markersLayer.addTo(map); 
 
-            marker.on("dragend",function(e){
+                marker.on("dragend",function(e){
+                
 
-            var changedPos = e.target.getLatLng();
-            //this.bindPopup(chagedPos.toString()).openPopup();
-                $("#lo").val(changedPos.lng);
-                $("#la").val(changedPos.lat);
-            });
+                var changedPos = e.target.getLatLng();
+                    geocodeService.reverse().latlng(changedPos).run(function (error, result) {
+                        $("#lo").val(changedPos.lng);
+                        $("#la").val(changedPos.lat);
+                        e.target.setPopupContent(result.address.Match_addr).openPopup();
+                    })
+                });
             });
         }
     });
@@ -564,8 +567,21 @@ $( document ).ready(function() {
 
     function addTableRow(data){
         //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
-        table.row.add([data.id,data.against,data.type,data.date,data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button>"]).draw(false);
+        console.log(data.date)
+        table.row.add([data.id,data.against,data.type,formatDate(data.date),data.reporter_name,data.reporter_contact,data.reporter_address,data.latitude,data.longitude,data.status,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button>"]).draw(false);
     } 
+    
+    function formatDate(date) {
+     var d = new Date(date),
+         month = '' + (d.getMonth() + 1),
+         day = '' + d.getDate(),
+         year = d.getFullYear();
+
+     if (month.length < 2) month = '0' + month;
+     if (day.length < 2) day = '0' + day;
+
+     return [year, month, day].join('-');
+ }
 
     
     

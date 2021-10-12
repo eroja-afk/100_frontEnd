@@ -2,47 +2,57 @@
   session_start();
   header('Access-Control-Allow-Origin: *'); 
 
+  $flag = 0;
+  
   if(isset($_POST['submit'])){
-    $ch = curl_init();
 
-    $data = array(
-      'username' => $_POST['username'],
-      'password' => $_POST['password']
-    );
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    // curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
-    curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
-    curl_setopt($ch, CURLOPT_FAILONERROR, true);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-    // In real life you should use something like:
-    // curl_setopt($ch, CURLOPT_POSTFIELDS, 
-    //          http_build_query(array('postvar1' => 'value1')));
-
-    // Receive server response ...
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $server_output = curl_exec($ch);
-
-    // Further processing ...
-    // var_dump($server_output);
-
-
-    if(curl_exec($ch) === false){
-      $error_msg = curl_error($ch);
+    if(empty($username) || empty($password)){
+      $flag = 1;
     } else {
-      $data = json_decode($server_output, true);
-      $_SESSION['userId'] = $data['data'][0]['id'];
-      $_SESSION['user'] = $data['data'][0]['unit_no'];
-      $type = $data['data'][0]['type'];
-      if(strcasecmp($type, 'dispatcher') == 0){
-        header('Location: reporter.php');
-      } else if(strcasecmp($type, 'unit') == 0){
-        header('Location: units.php');
+      $ch = curl_init();
+
+      $data = array(
+        'username' => $_POST['username'],
+        'password' => $_POST['password']
+      );
+
+      // curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
+      curl_setopt($ch, CURLOPT_URL,"https://recas-api.vercel.app/login");
+      curl_setopt($ch, CURLOPT_FAILONERROR, true);
+      curl_setopt($ch, CURLOPT_POST, 1);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+      // In real life you should use something like:
+      // curl_setopt($ch, CURLOPT_POSTFIELDS, 
+      //          http_build_query(array('postvar1' => 'value1')));
+
+      // Receive server response ...
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $server_output = curl_exec($ch);
+
+      // Further processing ...
+      // var_dump($server_output);
+
+
+      if(curl_exec($ch) === false){
+        $error_msg = curl_error($ch);
+      } else {
+        $data = json_decode($server_output, true);
+        $_SESSION['userId'] = $data['data'][0]['id'];
+        $_SESSION['user'] = $data['data'][0]['unit_no'];
+        $type = $data['data'][0]['type'];
+        if(strcasecmp($type, 'dispatcher') == 0){
+          header('Location: reporter.php');
+        } else if(strcasecmp($type, 'unit') == 0){
+          header('Location: units.php');
+        }
       }
+      curl_close ($ch);
     }
-    curl_close ($ch);
   }
 ?>
 
@@ -61,6 +71,10 @@
 	<div class="wrapper fadeInDown">
  		 <div id="formContent">
         <h1>RECAS-Login</h1>
+
+        <?php if($flag == 1){
+          echo "<span style='color:red'>Please input username and password.</span>";
+        } ?>
 
     <form action="" method="post">
       <!-- <form id="loginForm"> -->

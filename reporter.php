@@ -33,13 +33,13 @@
     integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
     crossorigin=""></script>
         <title>
-            Stat Map
+            CRADS
         </title>
     </head>
     <body>
     	<nav class="navbar navbar-expand-xl navbar-dark bg-primary">
   			<div class="container-fluid">
-    			<a class="navbar-brand" href="#" style="font-weight: bold" >RECAS</a>
+    			<a class="navbar-brand" href="#" style="font-weight: bold" >CRADS</a>
     			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       				<span class="navbar-toggler-icon"></span>
     			</button>
@@ -47,13 +47,10 @@
       				<ul class="navbar-nav">
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="reporter.php">Home</a>
-                            <a class="nav-link active" aria-current="page" href="dispatch.php">Dispatch</a>
         				</li>
-                        
-                        
+                        <a class="nav-link active" aria-current="page" href="dispatch.php">Dispatch</a>
       				</ul>
-                    
-                            <a href="logout.php" id="signO" class="btn btn-danger">Sign Out</a>
+                        <a href="logout.php" id="signO" class="btn btn-danger">Sign Out</a>
     			</div>
   			</div>
 		</nav><br>

@@ -65,12 +65,12 @@
    	<script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.js"></script>
     <script type="text/javascript" charset="utf8" src="bootstrap-5.1.2-dist/js/bootstrap.min.js"></script>
     <script src="./resources/jquery-3.6.0.min.js"></script>
-    <title>RECAS - Login</title>
+    <title>CRADS - Login</title>
 </head>
 <body>
 	<div class="wrapper fadeInDown">
  		 <div id="formContent">
-        <h1>RECAS-Login</h1>
+        <h1>CRADS-Login</h1>
 
         <?php if($flag == 1){
           echo "<span style='color:red'>Please input username and password.</span>";

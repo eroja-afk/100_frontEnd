@@ -98,7 +98,7 @@
         </div>
         </div>
 
-        <div class = "container-fluid">
+        <div class = "container">
             <div class="row">
                 <div class="col-sm-3">
                     <div class="card bg-light">
@@ -136,66 +136,6 @@
                         <button id="rmvAllMarkers"type="button" class="btn btn-danger"><i class="fa fa-close"></i> All Markers</button>
                     </div>
                 </div>
-            <div class="col-sm-3">
-                <div class="card bg-light">
-                    <div class="card-header bg-primary text-white">
-                        Filter Options
-                    </div>
-                    <div class="card-body">
-                            <div class="mb-3">
-                                <label for="searchchoice" class="form-label">Crimes Against</label>
-                                <select class="form-control" id="searchchoice" onclick="showSearchChoice(this.value)">
-                                <option value="">Select Option</option>
-                                <option value="0">Against Person</option>
-                                <option value="1">Against Property</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <select class="form-control" id="searchFcase" >
-                                    <option value="">Select Option</option>
-                                    <option value="1">Murder</option>
-                                    <option value="2">Homicide</option>
-                                    <option value="3">Physical Injuries</option>
-                                    <option value="4">Rape</option>
-                                </select>
-                                <select class="form-control" id="searchPcase" >
-                                    <option value="">Select Option</option>
-                                    <option value="5">Robbery</option>
-                                    <option value="6">Theft</option>
-                                    <option value="7">Carnapping</option>
-                                </select>
-                            </div>
-                            <label for="searchstatus" class="form-label">Status</label>
-                            <select class="form-control" id="searchstatus" >
-                                <option value="">Select Option</option>
-                                <option value="1">Ongoing</option>
-                                <option value="2">Finished</option>
-                            </select>
-                            <label for="searchbarangay" class="form-label">Barangay</label>
-                            <select class="form-control" id="searchbarangay">
-                                <option value="">Select Option</option>
-                                <option value="brgy1">brgy1</option>
-                                <option value="brgy2">brgy2</option>
-                                <option value="brgy3">brgy3</option>
-                                <option value="brgy4">brgy4</option>
-                            </select> 
-                            <div class="mb-3">
-                                <label for="searchcontact" class="form-label">Reporter Contact</label>
-                                <input class="form-control" id="searchcontact" type="text" placeholder="Reporter Contact" value=""></input>
-                            </div>
-                            <div class="mb-3">
-                                <label for="searchfrom" class="form-label">From</label>
-                                <input type="date" class="form-control" id="searchfrom" class="datepicker" ></p>
-                            </div>
-                            <div class="mb-3">
-                                <label for="searchto" class="form-label">To</label>
-                                <input type="date" class="form-control" id="searchto" class="datepicker" ></p>
-                            </div>
-                            <input type="button" class="btn btn-success form-control" id="filterbtn" value="Filter"></input>
-                    </div>
-                </div>
-                </div>
-            </div>
             <br/>
 
             <div class="card">

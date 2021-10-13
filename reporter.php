@@ -210,7 +210,12 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button id="rmvmarker"type="button" class="btn btn-warning" style="margin:10px;"><i class="fa fa-close"></i> Current Marker</button>
                         <button id="rmvAllMarkers"type="button" class="btn btn-danger"><i class="fa fa-close"></i> All Markers</button>
-                       
+                    </div>
+                    <div class="form-check" style="margin:10px;">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" >
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Show Checkpoints
+                            </label>
                     </div>
                 </div>
                 <div class="col-sm-3">

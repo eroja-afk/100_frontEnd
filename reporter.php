@@ -250,8 +250,8 @@
                             <label for="searchstatus" class="form-label">Status</label>
                             <select class="form-control" id="searchstatus" >
                                 <option value="">Select Option</option>
-                                <option value="1">Ongoing</option>
-                                <option value="2">Finished</option>
+                                <option value="ongoing">Ongoing</option>
+                                <option value="finished">Finished</option>
                             </select>
                             <label for="searchbarangay" class="form-label">Barangay</label>
                             <select class="form-control" id="searchbarangay">

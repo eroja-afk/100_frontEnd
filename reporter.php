@@ -785,7 +785,7 @@ $( document ).ready(function() {
     function reportCrime(){
 
             var ctype;
-            if($('#fhuman').val() == 'null'){
+            if($('#fhuman').val() == ''){
                 ctype = $('#fprop').val()
             }else{
                 ctype = $('#fhuman').val()
@@ -804,7 +804,7 @@ $( document ).ready(function() {
                 'crimeType_id'     :ctype,
                 'barangay' :        $("#barangay").val()
             };
-            
+            //console.log(ctype +"-asdasd-"+$('#fprop').val()+"-sdsd-"+$('#fhuman').val())
             
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type

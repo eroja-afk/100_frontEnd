@@ -212,7 +212,7 @@
                         <button id="rmvAllMarkers"type="button" class="btn btn-danger"><i class="fa fa-close"></i> All Markers</button>
                     </div>
                     <div class="form-check" style="margin:10px;">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" >
+                        <input class="form-check-input" type="checkbox" value="" onclick='getDispatcherData()' id="checkpoint" >
                             <label class="form-check-label" for="flexCheckDefault">
                                 Show Checkpoints
                             </label>
@@ -226,21 +226,21 @@
                     <div class="card-body">
                             <div class="mb-3">
                                 <label for="searchchoice" class="form-label">Crimes Against</label>
-                                <select class="form-control" id="searchchoice" onclick="showSearchChoice(this.value)">
+                                <select class="form-control dropperchoice" id="searchchoice" onclick="showSearchChoice(this.value)">
                                 <option value="">Select Option</option>
                                 <option value="0">Against Person</option>
                                 <option value="1">Against Property</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select class="form-control" id="searchFcase" >
+                                <select class="form-control dropper0" id="searchFcase" >
                                     <option value="">Select Option</option>
                                     <option value="1">Murder</option>
                                     <option value="2">Homicide</option>
                                     <option value="3">Physical Injuries</option>
                                     <option value="4">Rape</option>
                                 </select>
-                                <select class="form-control" id="searchPcase" >
+                                <select class="form-control dropper1" id="searchPcase" >
                                     <option value="">Select Option</option>
                                     <option value="5">Robbery</option>
                                     <option value="6">Theft</option>
@@ -383,10 +383,44 @@
     var filteredRows;
     var markersLayer = new L.LayerGroup();
     var tableMarkerLayer = new L.LayerGroup();
+    var circleMarkerLayer = new L.LayerGroup();
     var singleDatas = [];
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     $('.datepicker').datepicker();
+
+    function getDispatcherData(){
+        if($("#checkpoint").is(":checked")){
+
+        
+        var something; 
+        $.ajax({ 
+            method: "GET", 
+            url: "https://recas-api.vercel.app/showDispatch",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            dataType:"json"
+            }).done(function( data ) { 
+                //console.log("==="+data);
+                var tableData = data;
+
+                for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
+                    
+                    makecircleMarker(tableData.data[i],circleMarkerLayer);
+                    
+                }
+               
+            });
+        }else{
+
+            map.removeLayer(circleMarkerLayer)
+        }
+
+
+    }
     
 function showChoice(choice){
     if(choice == "Human"){
@@ -441,6 +475,21 @@ function showChoice(choice){
             usedLayer.addTo(map); 
             singleDatas.push({id:data.id,marker:tempMarker})
         }
+
+        
+    }
+    function makecircleMarker(data,usedLayer){
+        //console.log(data.latitude)
+        var flag = 0;
+
+            var tempMarker = L.circleMarker([data.latitude,data.longitude],{
+                                color: "green",
+                                fillColor: "#9bd713",
+                                fillOpacity: 0.5,
+                                radius: 15.0
+                            }).addTo(usedLayer);
+            
+            usedLayer.addTo(map); 
 
         
     }
@@ -588,7 +637,8 @@ $( document ).ready(function() {
                 $("#la").val(result.latlng.lat);
 
                 alert(result.latlng)
-                marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+                marker = L.marker(result.latlng,{draggable:"true"
+      }).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
 
                 markersLayer.addTo(map); 
 
@@ -825,6 +875,8 @@ $( document ).ready(function() {
             
         });
     }
+
+
         
      
 });

@@ -203,11 +203,11 @@
         if(flag == 0 ){
             var html = "<button class='markerRemove btn btn-danger' id='marker"+data.dispatch_id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
             var tempMarker = L.circleMarker([data.latitude,data.longitude],{
-          color: "red",
-          fillColor: "#f03",
-          fillOpacity: 0.5,
-          radius: 15.0
-      }).addTo(usedLayer).bindPopup(html);
+                                color: "green",
+                                fillColor: "#9bd713",
+                                fillOpacity: 0.5,
+                                radius: 15.0
+                            }).addTo(usedLayer).bindPopup(html);
             usedLayer.addTo(map); 
             singleDatas.push({id:data.dispatch_id,marker:tempMarker})
         }
@@ -480,11 +480,11 @@ $( document ).ready(function() {
             success   : function(data) {
                 console.log(data);
                 marker.setStyle({
-                    color: "red",
-          fillColor: "#f03",
-          fillOpacity: 0.5,
-          radius: 15.0
-                })
+                                color: "green",
+                                fillColor: "#9bd713",
+                                fillOpacity: 0.5,
+                                radius: 15.0
+                            })
             }
             
         });

@@ -486,8 +486,7 @@ function showChoice(choice){
                                 color: "green",
                                 fillColor: "#9bd713",
                                 fillOpacity: 0.5,
-                                radius: 15.0
-                            }).addTo(usedLayer);
+                                radius: 15.0}).addTo(usedLayer);
             
             usedLayer.addTo(map); 
 
@@ -805,7 +804,7 @@ $( document ).ready(function() {
                 'crimeType_id'     :ctype,
                 'barangay' :        $("#barangay").val()
             };
-
+            
             
         $.ajax({ //Process the form using $.ajax()
             method      : 'POST', //Method type

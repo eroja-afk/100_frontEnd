@@ -386,7 +386,10 @@
     var circleMarkerLayer = new L.LayerGroup();
     var singleDatas = [];
 
-    var map = L.map('mapid').setView([10.3157, 123.8854], 14);
+    var map = L.map('mapid', {
+        minZoom: 14,
+        maxZoom: 16
+    }).setView([10.3157, 123.8854],15);
     $('.datepicker').datepicker();
 
     function getDispatcherData(){

@@ -235,9 +235,9 @@
         var data={
             id: iden.getAttribute("id"),
             latitude: iden.getAttribute("lat"),
-            longitude: iden.getAttribute("lng")
+            longitude: iden.getAttribute("long")
         }
-        
+        console.log(data)
         makeMarker(data,tableMarkerLayer)
         window.scrollTo(0, 80);
 
@@ -258,11 +258,16 @@
                 flag = 1; 
                 //break;
             }
-        })
-
+            })
+    
         if(flag == 0 ){
             var html = "<button class='markerRemove btn btn-danger' id='marker"+data.dispatch_id+"' value='Remove' onclick='removeMarker(event)'>Remove</button><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editCrimeModal'>Edit</button>";
-            var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer).bindPopup(html);
+            var tempMarker = L.circleMarker([data.latitude,data.longitude],{
+          color: "red",
+          fillColor: "#f03",
+          fillOpacity: 0.5,
+          radius: 15.0
+      }).addTo(usedLayer).bindPopup(html);
             usedLayer.addTo(map); 
             singleDatas.push({id:data.dispatch_id,marker:tempMarker})
         }
@@ -282,9 +287,10 @@
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     
     function removeMarker(e){
-        singleDatas.forEach((data)=>{
+        singleDatas.forEach((data,index)=>{
             if("marker"+data.id == e.target.id){
                 map.removeLayer(data.marker)
+                singleDatas.splice(index,1)
             }
         })
     }
@@ -368,7 +374,12 @@ $( document ).ready(function() {
                 $("#lat").val(result.latlng.lat);
 
                 alert(result.latlng)
-                marker = L.marker(result.latlng,{draggable:"true"}).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
+                marker = L.circleMarker(result.latlng,{
+          color: "yellow",
+          fillColor: "#ffd966",
+          fillOpacity: 0.5,
+          radius: 15.0
+      }).addTo(markersLayer).bindPopup(result.address.Match_addr).openPopup();
 
                 markersLayer.addTo(map); 
 
@@ -394,24 +405,24 @@ $( document ).ready(function() {
         deleteMarker();
     })
 
-    // $("#tableToMap").click(function(){
-    //     selectOnlyFiltered();
-    // })
+    $("#tableToMap").click(function(){
+        selectOnlyFiltered();
+    })
 
     $("#rmvAllMarkers").click(function(){
         markersLayer.clearLayers();
         tableMarkerLayer.clearLayers();
-        $("#lo").val(null);
-        $("#la").val(null);
+        $("#long").val(null);
+        $("#lat").val(null);
         marker = null;
-        singleDatas = []
+        singleDatas = [];
     })
 
     
 
     function selectOnlyFiltered(){
         var tempData= {
-            id: 1000,
+            dispatch_id: 1000,
             latitude:  0,
             longitude:  0
         }
@@ -419,11 +430,13 @@ $( document ).ready(function() {
         filteredRows = table.rows({filter: 'applied'});
         //console.log(filteredRows.data()[0])
         for(var i = 0 ; i < filteredRows.data().length ; i ++){
-            // console.log(filteredRows.data()[i][6])
-            // console.log(filteredRows.data()[i][7])
-            tempData.id = filteredRows.data()[i][0];
-            tempData.latitude = filteredRows.data()[i][7];
-            tempData.longitude = filteredRows.data()[i][8];
+             //console.log(filteredRows.data()[i][0])
+             //console.log(filteredRows.data()[i][7])
+            tempData.dispatch_id = "marker"+filteredRows.data()[i][0];
+            
+            tempData.longitude = filteredRows.data()[i][4];
+            tempData.latitude = filteredRows.data()[i][5];
+            //console.log(filteredRows.data()[i][4]+"-"+filteredRows.data()[i][5]+"select filtered")
             makeMarker(tempData,markersLayer)
         }
         
@@ -434,13 +447,13 @@ $( document ).ready(function() {
         $("#lo").val(null);
         $("#la").val(null);
         marker= null;
-        
+
     }
 
     function addTableRow(data){
         //var btn = "<button id='marker'"+data.id+" value='Show' onclick='showMarker(event)>Show</button>"
         // console.log(data.date)
-        table.row.add([data.dispatch_id,data.unit_no,formatDate(data.date),data.details,data.longitude,data.latitude,"<button class='btn btn-primary' lng='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button><a data-id="+data.dispatch_id+" class='btn btn-primary' data-bs-toggle='modal' id='edit-modal' data-bs-target='#editModal' onclick='getDispatchData("+data.dispatch_id+")'>Edit</a>"]).draw(false);
+        table.row.add([data.dispatch_id,data.unit_no,formatDate(data.date),data.details,data.longitude,data.latitude,"<button class='btn btn-primary' long='"+data.longitude+"' lat='"+data.latitude+"' id='marker"+data.id+"' value='Show' onclick='showMarker(this)'>Show</button><a data-id="+data.dispatch_id+" class='btn btn-primary' data-bs-toggle='modal' id='edit-modal' data-bs-target='#editModal' onclick='getDispatchData("+data.dispatch_id+")'>Edit</a>"]).draw(false);
     } 
 
 
@@ -476,9 +489,9 @@ $( document ).ready(function() {
                 var tableData = data;
 
                
-                table.clear().draw()
+                //table.clear().draw()
                 for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
-                    //console.log(tableData.data[i])
+                    //console.log(tableData.data[i].longitude+"show dispatch"+tableData.data[i].latitude)
                     something = tableData.data[i];
                    
                     makeMarker(tableData.data[i],markersLayer);
@@ -513,6 +526,12 @@ $( document ).ready(function() {
             dataType  : 'json',
             success   : function(data) {
                 console.log(data);
+                marker.setStyle({
+                    color: "red",
+          fillColor: "#f03",
+          fillOpacity: 0.5,
+          radius: 15.0
+                })
             }
             
         });

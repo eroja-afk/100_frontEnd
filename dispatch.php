@@ -128,6 +128,12 @@
                             <button class="btn btn-success form-control" id="submit_dispatch">Submit</button>
                     </div>
                 </div>
+                <div class="form-check" style="margin:10px;">
+                        <input class="form-check-input" type="checkbox" value="" onclick='getDispatcherData()' id="checkpoint" >
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Show Crime Pins
+                            </label>
+                </div>
             </div>
                 <div class="col-sm-6">
                     <div id="mapid"></div>

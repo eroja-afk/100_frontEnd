@@ -129,8 +129,8 @@
                     </div>
                 </div>
                 <div class="form-check" style="margin:10px;">
-                        <input class="form-check-input" type="checkbox" value="" onclick='getDispatcherData()' id="checkpoint" >
-                            <label class="form-check-label" for="flexCheckDefault">
+                        <input class="form-check-input" type="checkbox" value="" onclick='showcrimepins()' id="crimepins" >
+                            <label class="form-check-label" for="crimepins">
                                 Show Crime Pins
                             </label>
                 </div>
@@ -175,6 +175,43 @@
 
 <script>
     var singleDatas = []
+    function showcrimepins(){
+        if($("#crimepins").is(":checked")){
+
+            $.ajax({ 
+            method: "GET", 
+            url: "https://recas-api.vercel.app/getAllCrimes",
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            },
+            dataType:"json"
+            }).done(function( data ) { 
+                var tableData = data;
+                console.log(data)
+                
+                for(var i = 0 ; i < Object.keys(tableData.data).length ; i++){
+                    //console.log(tableData.data[i])
+                    
+                    //console.log(tableData.data[i])
+                    makepinMarker(tableData.data[i],pinmarkerLayer);
+                   
+                }
+                //console.log(markerData)
+            });
+
+        }else{
+            map.removeLayer(pinmarkerLayer)
+        }
+    }
+
+    function makepinMarker(data,usedLayer){
+        //console.log(data)
+            var tempMarker = L.marker([data.latitude,data.longitude]).addTo(usedLayer);
+            usedLayer.addTo(map); 
+        
+    }
 
     function showMarker(iden){
         //console.log(iden.getAttribute("lat"))
@@ -229,6 +266,7 @@
     var filteredRows;
     var markersLayer = new L.LayerGroup();
     var tableMarkerLayer = new L.LayerGroup();
+    var pinmarkerLayer = new L.LayerGroup();
 
     var map = L.map('mapid').setView([10.3157, 123.8854], 14);
     
@@ -273,7 +311,7 @@
 
         $.ajax({ 
             method: "post", 
-            url: "http://localhost:3000/getDispatch",
+            url: "https://recas-api.vercel.app/getDispatch",
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': '*',
@@ -528,6 +566,9 @@ $( document ).ready(function() {
         });
     }); 
      
+    // crimepins
+   
+
 });
 
         

@@ -349,8 +349,21 @@
     }
 
 $( document ).ready(function() { 
+        $("#searchFcase").toggle();
+        $("#searchPcase").toggle();
 
-    
+    function showSearchChoice(){
+        if($("#searchchoice") == "0"){
+            $("#searchFcase").toggle();
+            //$("#searchPcase").hide();
+        }else if($("#searchchoice") == "1"){
+            $("#searchPcase").toggle();
+            //$("#searchFcase").hide();
+        }else{
+            $("#searchFcase").hide();
+            $("#searchPcase").hide();
+        }
+    }
     
 
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

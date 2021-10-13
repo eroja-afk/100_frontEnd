@@ -33,13 +33,13 @@
     integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
     crossorigin=""></script>
         <title>
-            Stat Map
+            CRADS
         </title>
     </head>
     <body>
     	<nav class="navbar navbar-expand-xl navbar-dark bg-primary">
   			<div class="container-fluid">
-    			<a class="navbar-brand" href="#" style="font-weight: bold" >RECAS</a>
+    			<a class="navbar-brand" href="#" style="font-weight: bold" >CRADS</a>
     			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       				<span class="navbar-toggler-icon"></span>
     			</button>

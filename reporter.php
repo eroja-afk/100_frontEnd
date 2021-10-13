@@ -47,13 +47,10 @@
       				<ul class="navbar-nav">
         				<li class="nav-item">
           					<a class="nav-link active" aria-current="page" href="reporter.php">Home</a>
-                            <a class="nav-link active" aria-current="page" href="dispatch.php">Dispatch</a>
         				</li>
-                        
-                        
+                        <a class="nav-link active" aria-current="page" href="dispatch.php">Dispatch</a>
       				</ul>
-                    
-                            <a href="logout.php" id="signO" class="btn btn-danger">Sign Out</a>
+                        <a href="logout.php" id="signO" class="btn btn-danger">Sign Out</a>
     			</div>
   			</div>
 		</nav><br>

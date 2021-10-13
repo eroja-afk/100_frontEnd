@@ -107,10 +107,10 @@
                             <div class="mb-3 row">
                                 <label class="form-label">Longitude and Latitude </label>
                                 <div class="col-sm-6">
-                                    <input id="lat" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
+                                    <input id="long" class="lo form-control" type="text" name="longitude"placeholder="Longitude" disabled="">
                                 </div>
                                 <div class="col-sm-6">
-                                    <input id="long" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
+                                    <input id="lat" class="la form-control" type="text" name="latitude" placeholder="Latitude" disabled="">
                                 </div>
                             </div>
                             <div class="mb-3">
